@@ -1,6 +1,7 @@
 #ifndef CONFIG_HH_
 #define CONFIG_HH_
 
+#include <string>
 #include <map>
 /**
 	 Represent a config file used to configure complicated applications
