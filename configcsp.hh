@@ -12,6 +12,15 @@ using namespace std;
 enum prot = { "csp", "https", "http"}; //only protocols we'll use
 enum ip = {"ipV4", "ipV6"}; //only IP versions we'll use at the moment
 
+class buff{ //To be able to access the buffer size and multiplier easily.
+public:
+	int size; //Size of the buffer
+	char mul; //Multiplier, M for mega, m for milli, k for kilo etc
+	buff(int x, char a){
+		size = x; mul = a;
+	}
+};
+
 class csp{
 public:
 	uint16_t port; // Port number to talk/listen on
@@ -19,8 +28,9 @@ public:
 	ip ip_ver; // Version if IP we're going to use
 	String log; // The name of the log file to be generated
 	String base; // this depends on os, base for all directory
+	buf buffer;
 
-	csp(){
+	csp(){ //ToDo: Write the tokenizer and make the fix the x[1] thing, because the 
 		ifstream reader;
 		char x[10];
 		String line;
@@ -28,10 +38,12 @@ public:
 		while(!reader.eof()){
 			reader>>x;
 			//split x into words
-			if(strcmp(x, "PORT"))
+			if(strcmp(x, "port"))
 				port = uint16_t(x[1]);
-			else if(strcmp(x,"LOG"))
+			else if(strcmp(x,"log"))
 				log = x[1];
+			else if(strcmp(x,"protocol"))
+				protocol = x[1];
 		}
 	}
 };
