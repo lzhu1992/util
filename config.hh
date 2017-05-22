@@ -14,7 +14,7 @@ This means # followed by space(s) followed by character(s) and finally a new lin
 Need to think if newline is really required.
 */
 
-//ToDo: Function to take out the white spcees form the names
+//ToDo: Function to take out the white spaces from the names
 
 using namespace std;
 
