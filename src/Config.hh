@@ -29,9 +29,13 @@ int stringToInt(string s) {
 }
 
 class BadType { 
+private:
+	const string filename;
+	int lineNum;
 public:
-	BadType(const char filename[], int lineNum) {
-		
+	BadType(const char filename[], int lineNum) : lineNum(lineNum), filename(filename) {}
+	friend ostream& operator <<(ostream& s, constBadType& e) {
+		return s<<"Bad Type at " << e.filename << ": " << e.lineNum;
 	}
 };
 
