@@ -19,9 +19,10 @@ template t1
 HashMap<String, t1> map1
 Read_file(file):
 	map[key]=value
-if(!check_correct(map1, project name))
-	print "config file not good"
-	exit 1
+if  else (proj_name):
+	if(!check_correct_projNAME(map1)):
+		print "config file not good"
+		exit 1
 */
 
 class buff_size{ //To be able to access the buffer size and multiplier easily.
