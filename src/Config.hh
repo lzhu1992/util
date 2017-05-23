@@ -179,12 +179,15 @@ public:
 	void filereader(string name){
 		string line;
 		regex comment ("#.*$");
+		regex whitespace ("^ +| +$|( ) +|\\t+");
 		ifstream reader;
 		reader.open(name, ios::in);
 		while(!reader.eof()){
 			getline(reader, line);
 			//removing the comments
 			line = regex_replace(line, comment, "");
+			//removing whitespaces
+			line = regex_replace(line, whitespace, "");
 			// split commentless line into tokens and see how we add them to the map.
 		}
 		reader.close();
