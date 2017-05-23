@@ -92,7 +92,6 @@ public:
 
 	void filereader(string name){
 		string line;
-		//regex comment ("#(\\s|[a-zA-z0-9]*)*\\n?");
 		regex comment ("#.*$");
 		ifstream reader;
 		reader.open(name, ios::in);
