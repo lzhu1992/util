@@ -2,6 +2,7 @@
 #define CONFIG_HH_
 
 #include <string>
+#include <fstream>
 #include <map>
 /**
 	 Represent a config file used to configure complicated applications
@@ -21,6 +22,18 @@
 
 class Config {
 private:
+	class buffer{
+	public:
+		int size;
+		char mul; //multiplier
+		buffer(int s, char m;){ size = s;  mul = m; }
+		~buffer() { delete size; delete mul; }
+	};
+
+	class LogLevel{}; //ToDo: Write this
+
+
+	//ToDo: wny have a separate structure and class for symbol?
 	struct Sym {
 		enum Type {U32, U64, I32, D, S};
 		Type type;
@@ -31,16 +44,23 @@ private:
 			int64_t  i64;
 			double   d;
 			string   s;
+			boolean	 b;
+			shape    sh; //ToDo: write shape in the relevant header
+			vec3D    vec; //ToDo: check spelling of vec3D when we incldue the header
+			buffer   buff;
+			LogLevel ll; //ToDo: write log level
 		};
 	};
+
 	class Sym {
 	public:
 		virtual T getValue() const = 0;
 	};
+
 	class UInt32Sym : public Sym {
 		uint32_t getValue() const;
 	}
-	class UInt32Sym : public Sym {
+	class UInt64Sym : public Sym {
 		uint32_t getValue() const;
 	}
 	class DoubleSym : public Sym {
@@ -48,6 +68,8 @@ private:
 	}
 
 	std::map<string, Sym*> fields;
+
+
 public:
 	Config(const char filename[], ...);
 	void load(const char filename[], ...);
@@ -68,3 +90,6 @@ public:
 		fields.set(name, new Sym(D, val));
 	}
 };
+
+
+#endif
