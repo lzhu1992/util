@@ -18,6 +18,7 @@
 	 This is important only if the file is large so at the moment we can ignore
 
  */
+
 class Config {
 private:
 	struct Sym {
@@ -32,7 +33,21 @@ private:
 			string   s;
 		};
 	};
-	std::map<string, string> fields;
+	class Sym {
+	public:
+		virtual T getValue() const = 0;
+	};
+	class UInt32Sym : public Sym {
+		uint32_t getValue() const;
+	}
+	class UInt32Sym : public Sym {
+		uint32_t getValue() const;
+	}
+	class DoubleSym : public Sym {
+		double getValue() const;
+	}
+
+	std::map<string, Sym*> fields;
 public:
 	Config(const char filename[], ...);
 	void load(const char filename[], ...);
@@ -42,6 +57,8 @@ public:
 	uint16_t getUInt16(const char name[]) const;
 	uint32_t getUInt32(const char name[]) const;
 	uint64_t getUInt64(const char name[]) const;
+	//TODO:	template<typename T>
+	//	get<T>(const char name[]) {
 	double getDouble(const char name[]) const;
 	string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const;
