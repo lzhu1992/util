@@ -13,6 +13,17 @@ It will check if they are the same as specified, and print error messages accord
 #include <iostream>
 #include <regex>
 
+/**
+PSEUDO CODE
+template t1
+HashMap<String, t1> map1
+Read_file(file):
+	map[key]=value
+if(!check_correct(map1, project name))
+	print "config file not good"
+	exit 1
+*/
+
 class buff_size{ //To be able to access the buffer size and multiplier easily.
 public:
 	int size; //Size of the buffer
