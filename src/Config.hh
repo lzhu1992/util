@@ -37,19 +37,19 @@ public:
 
 class Config {
 private:
-	class buffer{
+	class memsize{
 	public:
 		int size;
 		char mul; //multiplier
-		buffer(int s, char m;){ size = s;  mul = m; }
-		~buffer() { delete size; delete mul; }
+		memsize(int s, char m;){ size = s;  mul = m; }
+		~memsize() { delete size; delete mul; }
 	};
 
 	class LogLevel{}; //ToDo: Write this
 
 
 	struct Sym {
-		enum Type {U32, U64, I32, I64, D, S, B, SH, VEC, BUFF, LL};
+		enum Type {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL};
 		Type type;
 		union {
 			uint32_t u32;
@@ -61,7 +61,7 @@ private:
 			boolean	 b;
 			shape    sh; //ToDo: write shape in the relevant header
 			vec3D    vec; //ToDo: check spelling of vec3D when we incldue the header
-			buffer   buff;
+			memsize   buffer;
 			LogLevel ll; //ToDo: write log level
 		};
 	
@@ -74,7 +74,7 @@ private:
 		Sym(boolean	b)	  : type(B),    b(b) {}
 		Sym(shape sh) 	  : type(SH),   sh(sh) {}
 		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}
-		Sym(buffer buff)  : type(BUFF), buff(buff) {}
+		Sym(memsize buff)  : type(BUFFER), buffer(buffer) {}
 		Sym(LogLevel ll)  : type(LL),   ll(ll){}
 
 	};
@@ -152,8 +152,8 @@ public:
 		}
 		return vec;
 	}
-	buffer getBuffer() const {
-		if (type != BUFF) {
+	memsize getBuffer() const {
+		if (type != BUFFER) {
 			throw BadType(__FILE__, __LINE__);
 		}
 		return buff;
