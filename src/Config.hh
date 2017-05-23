@@ -89,6 +89,21 @@ public:
 	void set(const char name[], double val) {
 		fields.set(name, new Sym(D, val));
 	}
+
+	void filereader(string name){
+		string line;
+		//regex comment ("#(\\s|[a-zA-z0-9]*)*\\n?");
+		regex comment ("#.*$");
+		ifstream reader;
+		reader.open(name, ios::in);
+		while(!reader.eof()){
+			getline(reader, line);
+			//removing the comments
+			line = regex_replace(line, comment, "");
+			// split commentless line into tokens and see how we add them to the map.
+		}
+		reader.close();
+	}
 };
 
 
