@@ -118,7 +118,7 @@ public:
 	int32_t getInt32() const { 
 		if (type != I32)
 			throw BadType(__FILE__, __LINE__);
-		return 32;
+		return i32;
 	}
 
 	int64_t getInt64() const { 
