@@ -181,6 +181,7 @@ public:
 	}
 
 	void filereader(string name){
+		//Function to read the config file and update it to the hashmap for the configuration
 		string line;
 		regex comment ("#.*$");
 		regex whitespace ("^ +| +$|( ) +|\\t+");
