@@ -10,6 +10,20 @@
 
 using namespace std;
 
+/**
+NEEDED: We need a hardcoded list of what all is needed in the proj
+
+check_correct(Hashmap map1<k,v>):
+	for name in hardcoded_list:
+		if typeOF(map1[name]) == type we need/within enum/range
+			continue
+		else
+			raise error with type_name
+			print error to log
+			exit 1
+
+*/
+
 enum prot = { "csp", "https", "http"}; //only protocols we'll use
 enum ip = {"ipV4", "ipV6"}; //only IP versions we'll use at the moment
 
