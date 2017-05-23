@@ -1,4 +1,4 @@
-# Config file for CSP
+// Config file for CSP
 
 #ifndef CONFIGCSP_HH_
 #define CONFIGCSP_HH_
@@ -6,20 +6,12 @@
 #include <iostream>
 #include <fstream>
 #include <string.h>
+#include "config.hh"
 
 using namespace std;
 
 enum prot = { "csp", "https", "http"}; //only protocols we'll use
 enum ip = {"ipV4", "ipV6"}; //only IP versions we'll use at the moment
-
-class buff{ //To be able to access the buffer size and multiplier easily.
-public:
-	int size; //Size of the buffer
-	char mul; //Multiplier, M for mega, m for milli, k for kilo etc
-	buff(int x, char a){
-		size = x; mul = a;
-	}
-};
 
 class csp{
 public:
