@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <map>
+#include <regex>
 /**
 	 Represent a config file used to configure complicated applications
 
@@ -17,8 +18,22 @@
 	 possible to extend this model to automatically generate a binary version 
 	 of the config.  In this way, the config file can effectively be compiled.
 	 This is important only if the file is large so at the moment we can ignore
-
  */
+
+int stringToInt(string s) {
+	int x = 0;
+	for (int i = 0; i < s.length(); i++) {
+		x = x * 10 + int(s[i]);
+	}
+	return x;
+}
+
+class BadType { 
+public:
+	BadType(const char filename[], int lineNum) {
+		
+	}
+};
 
 class Config {
 private:
@@ -33,9 +48,8 @@ private:
 	class LogLevel{}; //ToDo: Write this
 
 
-	//ToDo: wny have a separate structure and class for symbol?
 	struct Sym {
-		enum Type {U32, U64, I32, D, S};
+		enum Type {U32, U64, I32, I64, D, S, B, SH, VEC, BUFF, LL};
 		Type type;
 		union {
 			uint32_t u32;
@@ -50,22 +64,21 @@ private:
 			buffer   buff;
 			LogLevel ll; //ToDo: write log level
 		};
+	
+		Sym(uint32_t u32) : type(U32),  u32(u32) {}
+		Sym(uint64_t u64) : type(U64),  u64(u64) {}
+		Sym(int32_t i32)  : type(I32),  i32(i32) {}
+		Sym(int64_t i64)  : type(I64),  i64(i64) {}
+		Sym(double d) 	  : type(D),    d(d) {}
+		Sym(string s)	  : type(S),    s(s) {}
+		Sym(boolean	b)	  : type(B),    b(b) {}
+		Sym(shape sh) 	  : type(SH),   sh(sh) {}
+		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}
+		Sym(buffer buff)  : type(BUFF), buff(buff) {}
+		Sym(LogLevel ll)  : type(LL),   ll(ll){}
+
 	};
 
-	class Sym {
-	public:
-		virtual T getValue() const = 0;
-	};
-
-	class UInt32Sym : public Sym {
-		uint32_t getValue() const;
-	}
-	class UInt64Sym : public Sym {
-		uint32_t getValue() const;
-	}
-	class DoubleSym : public Sym {
-		double getValue() const;
-	}
 
 	std::map<string, Sym*> fields;
 
@@ -75,6 +88,8 @@ public:
 	void load(const char filename[], ...);
 	void save(const char filename[]);
 	// TODO: Find out C++ syntax to have one name get<type>
+	// TODO: Check if "const char name[]" is needed in the parameter
+	/*
 	uint8_t getUInt8(const char name[]) const;
 	uint16_t getUInt16(const char name[]) const;
 	uint32_t getUInt32(const char name[]) const;
@@ -83,7 +98,78 @@ public:
 	//	get<T>(const char name[]) {
 	double getDouble(const char name[]) const;
 	string getString(const char name[]) const;
-	vector<uint32_t> getVector(const char name[]) const;
+	vector<uint32_t> getVector(const char name[]) const; */
+
+	//TODO: create BadType exception
+	uint32_t getUInt32() const { 
+		if (type != U32)
+			throw BadType(__FILE__, __LINE__);
+		return u32;
+	}
+	uint64_t getUInt64() const { 
+		if (type != U64)
+			throw BadType(__FILE__, __LINE__);
+		return u64;
+	}
+	int32_t getInt32() const { 
+		if (type != I32)
+			throw BadType(__FILE__, __LINE__);
+		return 32;
+	}
+
+	int64_t getInt64() const { 
+		if (type != I64)
+			throw BadType(__FILE__, __LINE__);
+		return i64;
+	}
+	double getDouble() const {
+		if (type != D) {
+			throw BadType(__FILE__, __LINE__);
+		}
+		return d;
+	}
+	string getString() const {
+		if (type != S) {
+			throw BadType(__FILE__, __LINE__);
+		}
+		return s;
+	}
+	boolean getBoolean() const {
+		if (type != B) {
+			throw BadType(__FILE__, __LINE__);
+		}
+		return b;
+	}
+	shape getShape() const {
+		if (type != SH) {
+			throw BadType(__FILE__, __LINE__);
+		}
+		return sh;
+	}
+	vec3D getVec3D() const {
+		if (type != VEC) {
+			throw BadType(__FILE__, __LINE__);
+		}
+		return vec;
+	}
+	buffer getBuffer() const {
+		if (type != BUFF) {
+			throw BadType(__FILE__, __LINE__);
+		}
+		return buff;
+	}
+	LogLevel getLogLevel() {
+		if (type != LL) {
+			throw BadType(__FILE__, __LINE__);
+		}
+		return ll;
+	}
+
+		  // template<typename T>
+		  // T get<T>(const char name[]) const {
+
+
+		  // }	
 
 	// set the value so that when config file is written, it is updated
 	void set(const char name[], double val) {
