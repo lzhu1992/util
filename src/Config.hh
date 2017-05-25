@@ -5,6 +5,11 @@
 #include <fstream>
 #include <map>
 #include <regex>
+#include <boost/tokenizer.hpp>
+
+using namespace std;
+using namespace boost;
+
 /**
 	 Represent a config file used to configure complicated applications
 
@@ -21,22 +26,11 @@
  */
 
 
-/*
-This is supposed to be a Parser
-We may need to move this function in our own config reader files 
-	since there is no way to tell from any given string if 
-	we want a long, uint32_t, double, etc.
-	By putting this function into our own files, we
-	can set a standard for how our config files 
-	will be written.
-*/
-template<typename T>
-	T stringToNum(string s) {
-		uint32_t x = 0;
-		for (int i = 0; i < s.length(); i++) {
-			x = x * 10 + T(s[i]);
-		}
-		return x;
+int stringToInt(string s) {
+	//Program to convert the strings to integers
+	int x = 0;
+	for (int i = 0; i < s.length(); i++) {
+		x = x * 10 + int(s[i]);
 	}
 
 class BadType { 
@@ -52,19 +46,31 @@ public:
 
 class Config {
 private:
-	class buffer{
+	
+	class memsize{
+		//class for defining meory of type 50M, for 50MB where size is 50, 
+		//and the multiplier is for M where we can use it to make it 10^6
 	public:
 		int size;
 		char mul; //multiplier
-		buffer(int s, char m;){ size = s;  mul = m; }
-		~buffer() { delete size; delete mul; }
+		memsize(int s, char m;){ size = s;  mul = m; }
+		//To print it for debuggng purposes
+		friend std::ostream& operator <<(std::ostream& s, memsize a) {
+			return s << a.size << a.mul; 
+		}
+		~memsize() { delete size; delete mul; }
 	};
 
 	class LogLevel{}; //ToDo: Write this
 
 
 	struct Sym {
-		enum Type {U32, U64, I32, I64, D, S, B, SH, VEC, BUFF, LL};
+		enum Type {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL};
+
+		typedef void (*ConversionFunc)(const string &a, Sym *s); //
+
+		static ConversionFunc converters[] = {convertToI32, }; 
+
 		Type type;
 		union {
 			uint32_t u32;
@@ -76,10 +82,10 @@ private:
 			boolean	 b;
 			shape    sh; //ToDo: write shape in the relevant header
 			vec3D    vec; //ToDo: check spelling of vec3D when we incldue the header
-			buffer   buff;
+			memsize  buffer;
 			LogLevel ll; //ToDo: write log level
 		};
-	
+
 		Sym(uint32_t u32) : type(U32),  u32(u32) {}
 		Sym(uint64_t u64) : type(U64),  u64(u64) {}
 		Sym(int32_t i32)  : type(I32),  i32(i32) {}
@@ -89,7 +95,7 @@ private:
 		Sym(boolean b)	  : type(B),    b(b) {}
 		Sym(shape sh) 	  : type(SH),   sh(sh) {}
 		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}
-		Sym(buffer buff)  : type(BUFF), buff(buff) {}
+		Sym(memsize buff)  : type(BUFFER), buffer(buffer) {}
 		Sym(LogLevel ll)  : type(LL),   ll(ll){}
 
 	};
@@ -98,6 +104,7 @@ private:
 
 
 public:
+	
 	Config(const char filename[], ...);
 	void load(const char filename[], ...);
 	void save(const char filename[]);
@@ -115,6 +122,7 @@ public:
 	vector<uint32_t> getVector(const char name[]) const; */
 
 	//TODO: create BadType exception
+
 	uint32_t getUInt32() const { 
 		if (type != U32)
 			throw BadType(__FILE__, __LINE__);
@@ -166,8 +174,8 @@ public:
 		}
 		return vec;
 	}
-	buffer getBuffer() const {
-		if (type != BUFF) {
+	memsize getBuffer() const {
+		if (type != BUFFER) {
 			throw BadType(__FILE__, __LINE__);
 		}
 		return buff;
@@ -177,28 +185,61 @@ public:
 			throw BadType(__FILE__, __LINE__);
 		}
 		return ll;
+<<<<<<< HEAD
 	}	
+=======
+	}
+>>>>>>> 3d4f71bd9eac893eeb2ed4df15127be1dc0a1568
 
 	// set the value so that when config file is written, it is updated
 	void set(const char name[], double val) {
 		fields.set(name, new Sym(D, val));
 	}
 
+	static void convertToI32(const string s, Sym* sym){
+		sym.i32=stoi(s);
+	}
+
 	void filereader(string name){
-		string line;
-		//regex comment ("#(\\s|[a-zA-z0-9]*)*\\n?");
+	//Should this function return a map instead?
+
+		//Function to read the config file and update it to the hashmap for the configuration
+		string line, key, val;
+		int flag;
 		regex comment ("#.*$");
+		regex whitespace ("^ +| +$|( ) +|\\t+");
 		ifstream reader;
 		reader.open(name, ios::in);
 		while(!reader.eof()){
 			getline(reader, line);
 			//removing the comments
 			line = regex_replace(line, comment, "");
-			// split commentless line into tokens and see how we add them to the map.
+			//removing whitespaces
+			line = regex_replace(line, whitespace, "");
+			//If the line is empty, continue
+			if(line=="")
+				continue;
+			// split comment-less line into tokens and see how we add them to the map.
+			char_separator<char> sep(", ");
+			flag=0;
+			tokenizer< char_separator<char> > tokens(line, sep);
+			for (const auto& t : tokens){
+				if (flag==0){
+					flag++;
+					key = t;
+				}
+				else
+					val = t;
+			}
+			fields[key]=val;
+		    //TODO: change this from string to the type of data we need
 		}
 		reader.close();
 	}
 };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3d4f71bd9eac893eeb2ed4df15127be1dc0a1568
 #endif
