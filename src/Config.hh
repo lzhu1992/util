@@ -70,7 +70,7 @@ private:
 		typedef void (*ConversionFunc)(const string &a, Sym *s); // this typedef is to
 		// make all the conversion function pointers. 
 
-		static ConversionFunc converters[] = {convertToI32, }; //this array will contain all the 
+		static const ConversionFunc converters[] = {convertToI32, }; //this array will contain all the 
 		// function names so that we can retrieve the function in O(1) time
 		// It is an array of function pointers.
 
@@ -195,12 +195,40 @@ public:
 		fields.set(name, new Sym(D, val));
 	}
 
-	static void convertToI32(const string s, Sym* sym){
-		sym.i32=stoi(s);
-	}
 	static void convertToUI32(const string s, Sym* sym){
 		sym.u32=stoul(s);
 	}
+	static void convertToUI64(const string s, Sym* sym){
+		sym.u64=stoul(s);
+	}
+	static void convertToI32(const string s, Sym* sym){
+		sym.i32=stoi(s);
+	}
+	static void convertToI64(const string s, Sym* sym){
+		sym.i64=stoi(s);
+	}
+	static void convertToD(const string s, Sym* sym) {
+		sym.d=stod(s);
+	}
+	static void (const string s, Sym* sym) {
+
+	}
+	static void (const string s, Sym* sym) {
+		
+	}
+	static void (const string s, Sym* sym) {
+		
+	}
+	static void (const string s, Sym* sym) {
+		
+	}
+	static void (const string s, Sym* sym) {
+		
+	}
+	static void (const string s, Sym* sym) {
+		
+	}
+
 
 	void filereader(string name){
 	//Should this function return a map instead?
