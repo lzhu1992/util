@@ -20,13 +20,24 @@
 	 This is important only if the file is large so at the moment we can ignore
  */
 
-int stringToInt(string s) {
-	int x = 0;
-	for (int i = 0; i < s.length(); i++) {
-		x = x * 10 + int(s[i]);
+
+/*
+This is supposed to be a Parser
+We may need to move this function in our own config reader files 
+	since there is no way to tell from any given string if 
+	we want a long, uint32_t, double, etc.
+	By putting this function into our own files, we
+	can set a standard for how our config files 
+	will be written.
+*/
+template<typename T>
+	T stringToNum(string s) {
+		uint32_t x = 0;
+		for (int i = 0; i < s.length(); i++) {
+			x = x * 10 + T(s[i]);
+		}
+		return x;
 	}
-	return x;
-}
 
 class BadType { 
 private:
@@ -75,14 +86,13 @@ private:
 		Sym(int64_t i64)  : type(I64),  i64(i64) {}
 		Sym(double d) 	  : type(D),    d(d) {}
 		Sym(string s)	  : type(S),    s(s) {}
-		Sym(boolean	b)	  : type(B),    b(b) {}
+		Sym(boolean b)	  : type(B),    b(b) {}
 		Sym(shape sh) 	  : type(SH),   sh(sh) {}
 		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}
 		Sym(buffer buff)  : type(BUFF), buff(buff) {}
 		Sym(LogLevel ll)  : type(LL),   ll(ll){}
 
 	};
-
 
 	std::map<string, Sym*> fields;
 
@@ -118,7 +128,7 @@ public:
 	int32_t getInt32() const { 
 		if (type != I32)
 			throw BadType(__FILE__, __LINE__);
-		return 32;
+		return i32;
 	}
 
 	int64_t getInt64() const { 
@@ -167,13 +177,7 @@ public:
 			throw BadType(__FILE__, __LINE__);
 		}
 		return ll;
-	}
-
-		  // template<typename T>
-		  // T get<T>(const char name[]) const {
-
-
-		  // }	
+	}	
 
 	// set the value so that when config file is written, it is updated
 	void set(const char name[], double val) {
