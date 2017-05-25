@@ -5,6 +5,11 @@
 #include <fstream>
 #include <map>
 #include <regex>
+#include <boost/tokenizer.hpp>
+
+using namespace std;
+using namespace boost;
+
 /**
 	 Represent a config file used to configure complicated applications
 
@@ -194,6 +199,14 @@ public:
 			//removing whitespaces
 			line = regex_replace(line, whitespace, "");
 			// split commentless line into tokens and see how we add them to the map.
+			char_separator<char> sep(", ");
+		    tokenizer< char_separator<char> > tokens(line, sep);
+		    for (const auto& t : tokens){
+		    	//checking to make sure that t is still a string.
+		    	string s = t;
+		    	cout<<s<<endl;
+		    	//it works.
+		    }
 		}
 		reader.close();
 	}
