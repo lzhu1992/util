@@ -238,8 +238,4 @@ public:
 	}
 };
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 3d4f71bd9eac893eeb2ed4df15127be1dc0a1568
 #endif
