@@ -70,7 +70,9 @@ private:
 		typedef void (*ConversionFunc)(const string &a, Sym *s); // this typedef is to
 		// make all the conversion function pointers. 
 
-		static const ConversionFunc converters[] = {convertToI32, }; //this array will contain all the 
+		static const ConversionFunc converters[] = {convertToUI32, convertToUI64,
+		convertToI32, convertToI64, convertToD, convertToB, convertToSH,
+		convertToVEC, convertToBUFFER, convertToLL}; //this array will contain all the 
 		// function names so that we can retrieve the function in O(1) time
 		// It is an array of function pointers.
 
@@ -124,7 +126,6 @@ public:
 	string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const; */
 
-	//TODO: create BadType exception
 
 	uint32_t getUInt32() const { 
 		if (type != U32)
@@ -225,7 +226,9 @@ public:
 		
 	}
 	static void convertToBUFFER(const string s, Sym* sym) {
-		
+		char mult = s.end();
+		s.assign(s.begin(), s.end()-1); //Removing the last character
+		sym.buffer = buffer(stoi(s);, mult);
 	}
 	static void convertToLL(const string s, Sym* sym) {
 		
