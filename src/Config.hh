@@ -67,9 +67,12 @@ private:
 	struct Sym {
 		enum Type {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL};
 
-		typedef void (*ConversionFunc)(const string &a, Sym *s); //
+		typedef void (*ConversionFunc)(const string &a, Sym *s); // this typedef is to
+		// make all the conversion function pointers. 
 
-		static ConversionFunc converters[] = {convertToI32, }; 
+		static ConversionFunc converters[] = {convertToI32, }; //this array will contain all the 
+		// function names so that we can retrieve the function in O(1) time
+		// It is an array of function pointers.
 
 		Type type;
 		union {
