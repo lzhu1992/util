@@ -95,7 +95,7 @@ private:
 		Sym(boolean b)	  : type(B),    b(b) {}
 		Sym(shape sh) 	  : type(SH),   sh(sh) {}
 		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}
-		Sym(memsize buff)  : type(BUFFER), buffer(buffer) {}
+		Sym(memsize buff) : type(BUFFER), buffer(buffer) {}
 		Sym(LogLevel ll)  : type(LL),   ll(ll){}
 
 	};
@@ -185,11 +185,7 @@ public:
 			throw BadType(__FILE__, __LINE__);
 		}
 		return ll;
-<<<<<<< HEAD
-	}	
-=======
 	}
->>>>>>> 3d4f71bd9eac893eeb2ed4df15127be1dc0a1568
 
 	// set the value so that when config file is written, it is updated
 	void set(const char name[], double val) {
