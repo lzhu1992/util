@@ -195,6 +195,9 @@ public:
 	static void convertToI32(const string s, Sym* sym){
 		sym.i32=stoi(s);
 	}
+	static void convertToUI32(const string s, Sym* sym){
+		sym.u32=stoul(s);
+	}
 
 	void filereader(string name){
 	//Should this function return a map instead?
