@@ -97,11 +97,11 @@ private:
 		Sym(int64_t i64)  : type(I64),  i64(i64) {}
 		Sym(double d) 	  : type(D),    d(d) {}
 		Sym(string s)	  : type(S),    s(s) {}
-		Sym(boolean b)	  : type(B),    b(b) {}		//"true" = true = 1, "false" = false = 0
-		Sym(shape sh) 	  : type(SH),   sh(sh) {}	//TODO: later
-		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}	//
-		Sym(memsize buff) : type(BUFFER), buffer(buffer) {}		//int and a char
-		Sym(LogLevel ll)  : type(LL),   ll(ll){}	//TODO: later
+		Sym(boolean b)	  : type(B),    b(b) {}		// "true" = true = 1, "false" = false = 0
+		Sym(shape sh) 	  : type(SH),   sh(sh) {}	// TODO: later
+		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}	// [1.0,1.0,1.0]
+		Sym(memsize buff) : type(BUFFER), buffer(buffer) {}		// int and a char
+		Sym(LogLevel ll)  : type(LL),   ll(ll){}	// TODO: later
 
 	};
 
@@ -219,11 +219,11 @@ public:
 			sym.b=0;
 		}
 	}
-	static void convertToSH(const string s, Sym* sym) {
+	static void convertToSH(const string s, Sym* sym) {		// TODO: get the constructor
 		
 	}
-	static void convertToVEC(const string s, Sym* sym) {
-		
+	static void convertToVEC(const string s, Sym* sym) {	// TODO: tokenize/regex to separate the format: [1.0,1.0,1.0]
+		//VEC3D CONSTRUCTOR: Vec3d(double x, double y, double z)
 	}
 	static void convertToBUFFER(const string s, Sym* sym) {
 		char mult = s.end();
