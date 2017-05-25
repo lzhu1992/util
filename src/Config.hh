@@ -95,11 +95,11 @@ private:
 		Sym(int64_t i64)  : type(I64),  i64(i64) {}
 		Sym(double d) 	  : type(D),    d(d) {}
 		Sym(string s)	  : type(S),    s(s) {}
-		Sym(boolean b)	  : type(B),    b(b) {}
-		Sym(shape sh) 	  : type(SH),   sh(sh) {}
-		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}
-		Sym(memsize buff) : type(BUFFER), buffer(buffer) {}
-		Sym(LogLevel ll)  : type(LL),   ll(ll){}
+		Sym(boolean b)	  : type(B),    b(b) {}		//"true" = true = 1, "false" = false = 0
+		Sym(shape sh) 	  : type(SH),   sh(sh) {}	//TODO: later
+		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}	//
+		Sym(memsize buff) : type(BUFFER), buffer(buffer) {}		//int and a char
+		Sym(LogLevel ll)  : type(LL),   ll(ll){}	//TODO: later
 
 	};
 
@@ -210,22 +210,24 @@ public:
 	static void convertToD(const string s, Sym* sym) {
 		sym.d=stod(s);
 	}
-	static void (const string s, Sym* sym) {
-
+	static void convertToB(const string s, Sym* sym) {
+		if (s.compare("true") == 0) {
+			sym.b=1;
+		}
+		else {
+			sym.b=0;
+		}
 	}
-	static void (const string s, Sym* sym) {
+	static void convertToSH(const string s, Sym* sym) {
 		
 	}
-	static void (const string s, Sym* sym) {
+	static void convertToVEC(const string s, Sym* sym) {
 		
 	}
-	static void (const string s, Sym* sym) {
+	static void convertToBUFFER(const string s, Sym* sym) {
 		
 	}
-	static void (const string s, Sym* sym) {
-		
-	}
-	static void (const string s, Sym* sym) {
+	static void convertToLL(const string s, Sym* sym) {
 		
 	}
 
