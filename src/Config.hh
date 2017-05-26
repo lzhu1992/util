@@ -91,6 +91,7 @@ private:
 			LogLevel ll; //ToDo: write log level
 		};
 
+		//Constructors
 		Sym(uint32_t u32) : type(U32),  u32(u32) {}
 		Sym(uint64_t u64) : type(U64),  u64(u64) {}
 		Sym(int32_t i32)  : type(I32),  i32(i32) {}
