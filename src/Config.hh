@@ -223,30 +223,31 @@ public:
 		
 	}
 	static void convertToVEC(const string s, Sym* sym) {	// TODO: tokenize/regex to separate the format: [1.0,1.0,1.0]
-		//int i = 0;
+		int i = 0;
 		int flag = 0;
 		int mul = 10;
 		double a = 0;
 		double d[3];
-		for (int i = 0; i < s.length(); i++) {
-			if (s[i].compare(',')) {
+		for (int j = 0; j < s.length(); j++) {
+			if (s[j].compare(',')) {
 				d[i] = a;
 				mul = 10;
 				flag = 0;
-				continue;
+				i++;
 			}
-			else if (s[i].compare('.')){
+			else if (s[j].compare('.')){
 				flag = 1;
 				mul = 10;
 			}
 			else if (flag == 0) {
-				a = a * 10 + int (s[i]);
+				a = a * 10 + int(s[j]);
 			}
 			if (flag == 1) {
-				a = a + (int (s[i]))/mul;
+				a = a + (int(s[j]))/mul;
 				mul*=10;
 			}
 		}
+		sym.vec=vec3d(d[0],d[1],d[2]);
 		//VEC3D CONSTRUCTOR: Vec3d(double x, double y, double z)
 	}
 	static void convertToBUFFER(const string s, Sym* sym) {
