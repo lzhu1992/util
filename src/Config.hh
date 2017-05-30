@@ -27,16 +27,8 @@ using namespace boost;
 	 This is important only if the file is large so at the moment we can ignore
  */
 
-//TODO: Kill if this is no longer used
-int stringToInt(string s) {
-	//Program to convert the strings to integers
-	int x = 0;
-	for (int i = 0; i < s.length(); i++) {
-		x = x * 10 + int(s[i]);
-	}
 
-//TODO: Insert comment describing BadType
-
+//BadType exception is thrown when an incorrect type is passed as a parameter for the "get" functions	
 class BadType { 
 private:
 	const string filename;
@@ -131,13 +123,13 @@ public:
 	string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const; */
 
-	template <typename T>
-		T get<T>(Type t) const {
-			if (type != T) {
-				throw BadType(__FILE__,__LINE__);
-			}
-			return union.t;
-		}
+	// template <typename T>
+	// 	T get<T>(Type t) const {
+	// 		if (type != T) {
+	// 			throw BadType(__FILE__,__LINE__);
+	// 		}
+	// 		return union.t;
+	// 	}
 
 	uint32_t getUInt32() const { 
 		if (type != U32)
@@ -235,30 +227,38 @@ public:
 		
 	}
 	static void convertToVEC(const string s, Sym* sym) {
-		int i = 0;
-		int flag = 0;
-		int mul = 10;
-		double a = 0;
+		// int i = 0;
+		// int flag = 0;
+		// int mul = 10;
+		// double a = 0;
+		// double d[3];
+		// for (int j = 0; j < s.length(); j++) {
+		// 	if (s[j]==(',')) {
+		// 		d[i] = a;
+		// 		a = 0;
+		// 		mul = 10;
+		// 		flag = 0;
+		// 		i++;
+		// 	}
+		// 	else if (s[j]==('.')){
+		// 		flag = 1;
+		// 		mul = 10;
+		// 	}
+		// 	else if (flag == 0) {
+		// 		a = a * 10 + double(s[j]) - 48;
+		// 	}
+		// 	else if (flag == 1) {
+		// 		a = a + ((double(s[j])) - 48)/mul;
+		// 		mul*=10;
+		// 	}
+		// }
 		double d[3];
-		for (int j = 0; j < s.length(); j++) {
-			if (s[j]==(',')) {
-				d[i] = a;
-				a = 0;
-				mul = 10;
-				flag = 0;
-				i++;
-			}
-			else if (s[j]==('.')){
-				flag = 1;
-				mul = 10;
-			}
-			else if (flag == 0) {
-				a = a * 10 + double(s[j]) - 48;
-			}
-			else if (flag == 1) {
-				a = a + ((double(s[j])) - 48)/mul;
-				mul*=10;
-			}
+		regex expression("(\\d+.?\\d*)");
+		sregex_token_iterator pos(str.cbegin(), str.cend(), expression);
+		sregex_token_iterator end;
+		int i = 0;
+		for (; pos != end; pos++) {
+			
 		}
 		sym.vec=vec3d(d[0],d[1],d[2]);
 		//VEC3D CONSTRUCTOR: Vec3d(double x, double y, double z)
