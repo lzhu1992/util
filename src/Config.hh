@@ -27,9 +27,8 @@ using namespace boost;
 	This is important only if the file is large so at the moment we can ignore
 */
 
-//TODO: Insert comment describing BadType
-
-class BadType { 
+class BadType {
+//BadType exception is thrown when an incorrect type is passed as a parameter for the "get" functions	
 private:
 	const string filename;
 	int lineNum;
@@ -121,6 +120,9 @@ public:
 	string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const; */
 
+
+#if 0
+	//ToDo: See if we can get this to work
 	template <typename T>
 		T get<T>(Type t) const {
 			if (type != T) {
@@ -128,6 +130,8 @@ public:
 			}
 			return union.t;
 		}
+#endif
+
 	uint32_t getUInt32() const { 
 		if (type != U32)
 			throw BadType(__FILE__, __LINE__);
@@ -222,31 +226,13 @@ public:
 	static void convertToSH(const string s, Sym* sym) {}		// TODO: get the constructor
 		
 	static void convertToVEC(const string s, Sym* sym) {
-		//TODO: make this happen using regex
-		int i = 0;
-		int flag = 0;
-		int mul = 10;
-		double a = 0;
 		double d[3];
-		for (int j = 0; j < s.length(); j++) {
-			if (s[j]==(',')) {
-				d[i] = a;
-				a = 0;
-				mul = 10;
-				flag = 0;
-				i++;
-			}
-			else if (s[j]==('.')){
-				flag = 1;
-				mul = 10;
-			}
-			else if (flag == 0) {
-				a = a * 10 + double(s[j]) - 48;
-			}
-			else if (flag == 1) {
-				a = a + ((double(s[j])) - 48)/mul;
-				mul*=10;
-			}
+		regex VectorType("(\\d+.?\\d*)");
+		sregex_token_iterator pos(str.cbegin(), str.cend(), VectorType);
+		sregex_token_iterator end;
+		int i = 0;
+		for (; pos != end; pos++) {
+			
 		}
 		sym.vec=vec3d(d[0],d[1],d[2]);
 		//VEC3D CONSTRUCTOR: Vec3d(double x, double y, double z)
@@ -260,13 +246,12 @@ public:
 	static void convertToLL(const string s, Sym* sym) {} //ToDo: Write LogLevel
 
 	void filereader(string name){
-	//Should this function return a map instead?
+	//ToDo: ASK - Should this function return a map instead?
 		//Function to read the config file and update it to the hashmap for the configuration
 		string line, key, val;
 		int flag;
 		regex comment ("#.*$");
-		regex whitespace ("^ +| +$|( ) +|\\t+");
-		regex checkVector("(\[\d+(.\d*),\d+(.\d*),\d+(.\d*)\])"); //this reads vector in form of [double,double,double]
+		regex whitespace ("^ +| +$|( ) +|\\t+"); //TODO: Ask - if they really need to be made static?
 		ifstream reader;
 		reader.open(name, ios::in);
 		while(!reader.eof()){
