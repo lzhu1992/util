@@ -27,14 +27,6 @@ using namespace boost;
 	This is important only if the file is large so at the moment we can ignore
  */
 
-//TODO: Kill if this is no longer used
-int stringToInt(string s) {
-	//Program to convert the strings to integers
-	int x = 0;
-	for (int i = 0; i < s.length(); i++) {
-		x = x * 10 + int(s[i]);
-	}
-
 //TODO: Insert comment describing BadType
 
 class BadType { 
