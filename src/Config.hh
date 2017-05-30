@@ -11,18 +11,18 @@ using namespace std;
 using namespace boost;
 
 /**
-	 Represent a config file used to configure complicated applications
+	Represent a config file used to configure complicated applications
 
-	 File format supports comments starting with #
-	 name-value pairs of data, with declaration of the type of names supported
-	 in the constructor so that subclsses of Config can specify the required 
-	 types of each tag.  In this way, the Config utility can display the
-	 line number and an error if the data is not as required
+	File format supports comments starting with #
+	name-value pairs of data, with declaration of the type of names supported
+	in the constructor so that subclsses of Config can specify the required 
+	types of each tag.  In this way, the Config utility can display the
+	line number and an error if the data is not as required
 
-	 TODO: Since Config files can be very large, and parsing is slow, it is
-	 possible to extend this model to automatically generate a binary version 
-	 of the config.  In this way, the config file can effectively be compiled.
-	 This is important only if the file is large so at the moment we can ignore
+	TODO: Since Config files can be very large, and parsing is slow, it is
+	possible to extend this model to automatically generate a binary version 
+	of the config.  In this way, the config file can effectively be compiled.
+	This is important only if the file is large so at the moment we can ignore
  */
 
 
