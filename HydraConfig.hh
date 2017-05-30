@@ -83,6 +83,7 @@ public:
 
   hydraConf(string file) : fileName(file){}
   void loadConfig() {
+    /*
     ifstream inp(fileName);     //opening stream to read file
     string line;                //for each line in the file
     std::smatch match;          //letting system know that we are looking for string objects
@@ -105,6 +106,7 @@ public:
       }
       //TODO: more things to find inside of a given file
     } //end loop
+  */
   }
 };
 

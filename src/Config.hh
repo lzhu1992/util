@@ -1,11 +1,13 @@
 #ifndef CONFIG_HH_
 #define CONFIG_HH_
 
+#include <cstdint>
 #include <string>
 #include <fstream>
 #include <map>
 #include <regex>
 #include <boost/tokenizer.hpp>
+#include "util/Vec3d.hh"
 
 using namespace std;
 using namespace boost;
@@ -25,13 +27,15 @@ using namespace boost;
 	This is important only if the file is large so at the moment we can ignore
  */
 
-
+//TODO: Kill if this is no longer used
 int stringToInt(string s) {
 	//Program to convert the strings to integers
 	int x = 0;
 	for (int i = 0; i < s.length(); i++) {
 		x = x * 10 + int(s[i]);
 	}
+
+//TODO: Insert comment describing BadType
 
 class BadType { 
 private:
@@ -58,7 +62,7 @@ private:
 		friend std::ostream& operator <<(std::ostream& s, memsize a) {
 			return s << a.size << a.mul; 
 		}
-		~memsize() { delete size; delete mul; }
+		~memsize() { delete size; delete mul; }//TODO: eliminate delete! no memory used
 	};
 
 	class LogLevel{}; //ToDo: Write this
@@ -84,7 +88,7 @@ private:
 			int64_t  i64;
 			double   d;
 			string   s;
-			boolean	 b;
+			bool	 b;
 			shape    sh; //ToDo: write shape in the relevant header
 			vec3D    vec; //ToDo: check spelling of vec3D when we incldue the header
 			memsize  buffer;
@@ -100,7 +104,7 @@ private:
 		Sym(string s)	  : type(S),    s(s) {}
 		Sym(boolean b)	  : type(B),    b(b) {}		// "true" = true = 1, "false" = false = 0
 		Sym(shape sh) 	  : type(SH),   sh(sh) {}	// TODO: later
-		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}	// [1.0,1.0,1.0]
+		Sym(const Vec3d& vec) 	  : type(VEC),  vec(vec) {}	// [1.0,1.0,1.0]
 		Sym(memsize buff) : type(BUFFER), buffer(buffer) {}		// int and a char
 		Sym(LogLevel ll)  : type(LL),   ll(ll){}	// TODO: later
 
@@ -127,6 +131,13 @@ public:
 	string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const; */
 
+	template <typename T>
+		T get<T>(Type t) const {
+			if (type != T) {
+				throw BadType(__FILE__,__LINE__);
+			}
+			return union.t;
+		}
 
 	uint32_t getUInt32() const { 
 		if (type != U32)
@@ -223,28 +234,29 @@ public:
 	static void convertToSH(const string s, Sym* sym) {		// TODO: get the constructor
 		
 	}
-	static void convertToVEC(const string s, Sym* sym) {	// TODO: tokenize/regex to separate the format: [1.0,1.0,1.0]
+	static void convertToVEC(const string s, Sym* sym) {
 		int i = 0;
 		int flag = 0;
 		int mul = 10;
 		double a = 0;
 		double d[3];
 		for (int j = 0; j < s.length(); j++) {
-			if (s[j].compare(',')) {
+			if (s[j]==(',')) {
 				d[i] = a;
+				a = 0;
 				mul = 10;
 				flag = 0;
 				i++;
 			}
-			else if (s[j].compare('.')){
+			else if (s[j]==('.')){
 				flag = 1;
 				mul = 10;
 			}
 			else if (flag == 0) {
-				a = a * 10 + int(s[j]);
+				a = a * 10 + double(s[j]) - 48;
 			}
-			if (flag == 1) {
-				a = a + (int(s[j]))/mul;
+			else if (flag == 1) {
+				a = a + ((double(s[j])) - 48)/mul;
 				mul*=10;
 			}
 		}
@@ -269,6 +281,7 @@ public:
 		int flag;
 		regex comment ("#.*$");
 		regex whitespace ("^ +| +$|( ) +|\\t+");
+		regex checkVector("(\[\d+(.\d*),\d+(.\d*),\d+(.\d*)\])"); //this reads vector in form of [double,double,double]
 		ifstream reader;
 		reader.open(name, ios::in);
 		while(!reader.eof()){
