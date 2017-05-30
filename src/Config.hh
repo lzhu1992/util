@@ -84,7 +84,7 @@ private:
 			int64_t  i64;
 			double   d;
 			string   s;
-			boolean	 b;
+			bool	 b;
 			shape    sh; //ToDo: write shape in the relevant header
 			vec3D    vec; //ToDo: check spelling of vec3D when we incldue the header
 			memsize  buffer;
