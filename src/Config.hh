@@ -1,11 +1,13 @@
 #ifndef CONFIG_HH_
 #define CONFIG_HH_
 
+#include <cstdint>
 #include <string>
 #include <fstream>
 #include <map>
 #include <regex>
 #include <boost/tokenizer.hpp>
+#include "util/Vec3d.hh"
 
 using namespace std;
 using namespace boost;
@@ -25,13 +27,15 @@ using namespace boost;
 	 This is important only if the file is large so at the moment we can ignore
  */
 
-
+//TODO: Kill if this is no longer used
 int stringToInt(string s) {
 	//Program to convert the strings to integers
 	int x = 0;
 	for (int i = 0; i < s.length(); i++) {
 		x = x * 10 + int(s[i]);
 	}
+
+//TODO: Insert comment describing BadType
 
 class BadType { 
 private:
@@ -58,7 +62,7 @@ private:
 		friend std::ostream& operator <<(std::ostream& s, memsize a) {
 			return s << a.size << a.mul; 
 		}
-		~memsize() { delete size; delete mul; }
+		~memsize() { delete size; delete mul; }//TODO: eliminate delete! no memory used
 	};
 
 	class LogLevel{}; //ToDo: Write this
@@ -100,7 +104,7 @@ private:
 		Sym(string s)	  : type(S),    s(s) {}
 		Sym(boolean b)	  : type(B),    b(b) {}		// "true" = true = 1, "false" = false = 0
 		Sym(shape sh) 	  : type(SH),   sh(sh) {}	// TODO: later
-		Sym(vec3D vec) 	  : type(VEC),  vec(vec) {}	// [1.0,1.0,1.0]
+		Sym(const Vec3d& vec) 	  : type(VEC),  vec(vec) {}	// [1.0,1.0,1.0]
 		Sym(memsize buff) : type(BUFFER), buffer(buffer) {}		// int and a char
 		Sym(LogLevel ll)  : type(LL),   ll(ll){}	// TODO: later
 
