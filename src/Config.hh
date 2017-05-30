@@ -25,11 +25,10 @@ using namespace boost;
 	possible to extend this model to automatically generate a binary version 
 	of the config.  In this way, the config file can effectively be compiled.
 	This is important only if the file is large so at the moment we can ignore
- */
+*/
 
-
+class BadType {
 //BadType exception is thrown when an incorrect type is passed as a parameter for the "get" functions	
-class BadType { 
 private:
 	const string filename;
 	int lineNum;
@@ -54,11 +53,9 @@ private:
 		friend std::ostream& operator <<(std::ostream& s, memsize a) {
 			return s << a.size << a.mul; 
 		}
-		~memsize() { delete size; delete mul; }//TODO: eliminate delete! no memory used
 	};
 
 	class LogLevel{}; //ToDo: Write this
-
 
 	struct Sym {
 		enum Type {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL};
@@ -123,13 +120,17 @@ public:
 	string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const; */
 
-	// template <typename T>
-	// 	T get<T>(Type t) const {
-	// 		if (type != T) {
-	// 			throw BadType(__FILE__,__LINE__);
-	// 		}
-	// 		return union.t;
-	// 	}
+
+#if 0
+	//ToDo: See if we can get this to work
+	template <typename T>
+		T get<T>(Type t) const {
+			if (type != T) {
+				throw BadType(__FILE__,__LINE__);
+			}
+			return union.t;
+		}
+#endif
 
 	uint32_t getUInt32() const { 
 		if (type != U32)
@@ -146,7 +147,6 @@ public:
 			throw BadType(__FILE__, __LINE__);
 		return i32;
 	}
-
 	int64_t getInt64() const { 
 		if (type != I64)
 			throw BadType(__FILE__, __LINE__);
@@ -200,17 +200,17 @@ public:
 		fields.set(name, new Sym(D, val));
 	}
 
-	static void convertToUI32(const string s, Sym* sym){
+	static void convertToUI32(const string s, Sym* sym) {
 		sym.u32=stoul(s);
 	}
-	static void convertToUI64(const string s, Sym* sym){
+	static void convertToUI64(const string s, Sym* sym) {
 		sym.u64=stoul(s);
 	}
-	static void convertToI32(const string s, Sym* sym){
+	static void convertToI32(const string s, Sym* sym) {
 		sym.i32=stoi(s);
 	}
-	static void convertToI64(const string s, Sym* sym){
-		sym.i64=stoi(s);
+	static void convertToI64(const string s, Sym* sym) {
+		sym.i64=stol(s);
 	}
 	static void convertToD(const string s, Sym* sym) {
 		sym.d=stod(s);
@@ -223,13 +223,12 @@ public:
 			sym.b=0;
 		}
 	}
-	static void convertToSH(const string s, Sym* sym) {		// TODO: get the constructor
+	static void convertToSH(const string s, Sym* sym) {}		// TODO: get the constructor
 		
-	}
 	static void convertToVEC(const string s, Sym* sym) {
 		double d[3];
-		regex expression("(\\d+.?\\d*)");
-		sregex_token_iterator pos(str.cbegin(), str.cend(), expression);
+		regex VectorType("(\\d+.?\\d*)");
+		sregex_token_iterator pos(str.cbegin(), str.cend(), VectorType);
 		sregex_token_iterator end;
 		int i = 0;
 		for (; pos != end; pos++) {
@@ -244,20 +243,16 @@ public:
 		s.assign(s.begin(), s.end()-1); //Removing the last character
 		sym.buffer = buffer(stoi(s);, mult);
 	}
-	static void convertToLL(const string s, Sym* sym) {
-		
-	}
 
+	static void convertToLL(const string s, Sym* sym) {} //ToDo: Write LogLevel
 
 	void filereader(string name){
-	//Should this function return a map instead?
-
+	//ToDo: ASK - Should this function return a map instead?
 		//Function to read the config file and update it to the hashmap for the configuration
 		string line, key, val;
 		int flag;
 		regex comment ("#.*$");
-		regex whitespace ("^ +| +$|( ) +|\\t+");
-		regex checkVector("(\[\d+(.\d*),\d+(.\d*),\d+(.\d*)\])"); //this reads vector in form of [double,double,double]
+		regex whitespace ("^ +| +$|( ) +|\\t+"); //TODO: Ask - if they really need to be made static?
 		ifstream reader;
 		reader.open(name, ios::in);
 		while(!reader.eof()){
