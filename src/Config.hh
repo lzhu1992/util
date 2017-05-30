@@ -218,7 +218,7 @@ public:
 		sym.i32=stoi(s);
 	}
 	static void convertToI64(const string s, Sym* sym){
-		sym.i64=stoi(s);
+		sym.i64=stol(s);
 	}
 	static void convertToD(const string s, Sym* sym) {
 		sym.d=stod(s);
@@ -235,6 +235,7 @@ public:
 		
 	}
 	static void convertToVEC(const string s, Sym* sym) {
+		//TODO: make this happen using regex
 		int i = 0;
 		int flag = 0;
 		int mul = 10;
