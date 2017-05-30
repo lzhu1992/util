@@ -227,38 +227,14 @@ public:
 		
 	}
 	static void convertToVEC(const string s, Sym* sym) {
-		// int i = 0;
-		// int flag = 0;
-		// int mul = 10;
-		// double a = 0;
-		// double d[3];
-		// for (int j = 0; j < s.length(); j++) {
-		// 	if (s[j]==(',')) {
-		// 		d[i] = a;
-		// 		a = 0;
-		// 		mul = 10;
-		// 		flag = 0;
-		// 		i++;
-		// 	}
-		// 	else if (s[j]==('.')){
-		// 		flag = 1;
-		// 		mul = 10;
-		// 	}
-		// 	else if (flag == 0) {
-		// 		a = a * 10 + double(s[j]) - 48;
-		// 	}
-		// 	else if (flag == 1) {
-		// 		a = a + ((double(s[j])) - 48)/mul;
-		// 		mul*=10;
-		// 	}
-		// }
 		double d[3];
 		regex expression("(\\d+.?\\d*)");
 		sregex_token_iterator pos(str.cbegin(), str.cend(), expression);
 		sregex_token_iterator end;
 		int i = 0;
 		for (; pos != end; pos++) {
-			
+			d[i] = convertToD(pos->str(), sym);
+			i++;
 		}
 		sym.vec=vec3d(d[0],d[1],d[2]);
 		//VEC3D CONSTRUCTOR: Vec3d(double x, double y, double z)
