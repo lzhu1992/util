@@ -127,6 +127,13 @@ public:
 	string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const; */
 
+	template <typename T>
+		T get<T>(Type t) const {
+			if (type != T) {
+				throw BadType(__FILE__,__LINE__);
+			}
+			return union.t;
+		}
 
 	uint32_t getUInt32() const { 
 		if (type != U32)
@@ -223,28 +230,29 @@ public:
 	static void convertToSH(const string s, Sym* sym) {		// TODO: get the constructor
 		
 	}
-	static void convertToVEC(const string s, Sym* sym) {	// TODO: tokenize/regex to separate the format: [1.0,1.0,1.0]
+	static void convertToVEC(const string s, Sym* sym) {
 		int i = 0;
 		int flag = 0;
 		int mul = 10;
 		double a = 0;
 		double d[3];
 		for (int j = 0; j < s.length(); j++) {
-			if (s[j].compare(',')) {
+			if (s[j]==(',')) {
 				d[i] = a;
+				a = 0;
 				mul = 10;
 				flag = 0;
 				i++;
 			}
-			else if (s[j].compare('.')){
+			else if (s[j]==('.')){
 				flag = 1;
 				mul = 10;
 			}
 			else if (flag == 0) {
-				a = a * 10 + int(s[j]);
+				a = a * 10 + double(s[j]) - 48;
 			}
-			if (flag == 1) {
-				a = a + (int(s[j]))/mul;
+			else if (flag == 1) {
+				a = a + ((double(s[j])) - 48)/mul;
 				mul*=10;
 			}
 		}
@@ -269,6 +277,7 @@ public:
 		int flag;
 		regex comment ("#.*$");
 		regex whitespace ("^ +| +$|( ) +|\\t+");
+		regex checkVector("(\[\d+(.\d*),\d+(.\d*),\d+(.\d*)\])"); //this reads vector in form of [double,double,double]
 		ifstream reader;
 		reader.open(name, ios::in);
 		while(!reader.eof()){
