@@ -224,7 +224,8 @@ public:
 		}
 	}
 	static void convertToSH(const string s, Sym* sym) {}		// TODO: get the constructor
-		
+	
+	//fixing this function	
 	static void convertToVEC(const string s, Sym* sym) {
 		double d[3];
 		regex VectorType("(\\d+.?\\d*)");
