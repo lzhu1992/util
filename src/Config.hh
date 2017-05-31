@@ -224,19 +224,19 @@ public:
 	}
 	static void convertToSH(const string s, Sym* sym) {}		// TODO: get the constructor
 	
-	//fixing this function	
-	static void convertToVEC(const string s, Sym* sym) {
-		double d[3];
+	static void convertToVEC(const string str, Sym* sym) {
+		string a[3];
 		regex VectorType("(\\d+.?\\d*)");
 		sregex_token_iterator pos(str.cbegin(), str.cend(), VectorType);
 		sregex_token_iterator end;
+		// breaking up string s into three substrings
+		// using substrings to call the vec3d constructor
 		int i = 0;
 		for (; pos != end; pos++) {
-			d[i] = convertToD(pos->str(), sym);
+			a[i] = pos->str();
 			i++;
 		}
-		sym.vec=Vec3d(d[0],d[1],d[2]);
-		//VEC3D CONSTRUCTOR: Vec3d(double x, double y, double z)
+		sym.vec=Vec3d(a[0], a[1], a[2]);
 	}
 	static void convertToBUFFER(const string s, Sym* sym) {
 		char mult = s.end();
