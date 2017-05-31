@@ -75,7 +75,7 @@ private:
 			int32_t  i32;
 			int64_t  i64;
 			double   d;
-			string   s;
+			string   s; //Can unions contain strings?
 			bool	 b;
 			Shape    sh; //ToDo: write shape in the relevant header
 			Vec3d    vec; //ToDo: check spelling of vec3D when we incldue the header
