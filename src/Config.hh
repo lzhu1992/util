@@ -78,8 +78,8 @@ private:
 			double   d;
 			string   s;
 			bool	 b;
-			shape    sh; //ToDo: write shape in the relevant header
-			vec3D    vec; //ToDo: check spelling of vec3D when we incldue the header
+			Shape    sh; //ToDo: write shape in the relevant header
+			Vec3d    vec; //ToDo: check spelling of vec3D when we incldue the header
 			memsize  buffer;
 			LogLevel ll; //ToDo: write log level
 		};
@@ -92,7 +92,7 @@ private:
 		Sym(double d) 	  : type(D),    d(d) {}
 		Sym(string s)	  : type(S),    s(s) {}
 		Sym(boolean b)	  : type(B),    b(b) {}		// "true" = true = 1, "false" = false = 0
-		Sym(shape sh) 	  : type(SH),   sh(sh) {}	// TODO: later
+		Sym(const Shape& sh) 	  : type(SH),   sh(sh) {}	// TODO: later
 		Sym(const Vec3d& vec) 	  : type(VEC),  vec(vec) {}	// [1.0,1.0,1.0]
 		Sym(memsize buff) : type(BUFFER), buffer(buffer) {}		// int and a char
 		Sym(LogLevel ll)  : type(LL),   ll(ll){}	// TODO: later
@@ -235,7 +235,7 @@ public:
 			d[i] = convertToD(pos->str(), sym);
 			i++;
 		}
-		sym.vec=vec3d(d[0],d[1],d[2]);
+		sym.vec=Vec3d(d[0],d[1],d[2]);
 		//VEC3D CONSTRUCTOR: Vec3d(double x, double y, double z)
 	}
 	static void convertToBUFFER(const string s, Sym* sym) {
