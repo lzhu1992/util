@@ -7,9 +7,10 @@
 #include <map>
 #include <regex>
 #include <boost/tokenizer.hpp>
-#include "util/Vec3d.hh"
+#include "geom/Vec3d.hh"
 
 using namespace std;
+using namespace geom;
 using namespace boost;
 
 /**
@@ -34,6 +35,7 @@ int stringToInt(string s) {
 	for (int i = 0; i < s.length(); i++) {
 		x = x * 10 + int(s[i]);
 	}
+}
 
 //TODO: Insert comment describing BadType
 
@@ -62,7 +64,6 @@ private:
 		friend std::ostream& operator <<(std::ostream& s, memsize a) {
 			return s << a.size << a.mul; 
 		}
-		~memsize() { delete size; delete mul; }//TODO: eliminate delete! no memory used
 	};
 
 	class LogLevel{}; //ToDo: Write this
@@ -73,9 +74,11 @@ private:
 		typedef void (*ConversionFunc)(const string &a, Sym *s); // this typedef is to
 		// make all the conversion function pointers. 
 
+#if 0
 		static const ConversionFunc converters[] = {convertToUI32, convertToUI64,
 		convertToI32, convertToI64, convertToD, convertToB, convertToSH,
-		convertToVEC, convertToBUFFER, convertToLL}; //this array will contain all the 
+		convertToVEC, convertToBUFFER, convertToLL}; //this array will contain all the
+#endif
 		// function names so that we can retrieve the function in O(1) time
 		// It is an array of function pointers.
 
@@ -88,8 +91,8 @@ private:
 			double   d;
 			string   s;
 			bool	 b;
-			shape    sh; //ToDo: write shape in the relevant header
-			vec3D    vec; //ToDo: check spelling of vec3D when we incldue the header
+			//			shape    sh; //ToDo: write shape in the relevant header
+			//			vec3D    vec; //ToDo: check spelling of vec3D when we incldue the header
 			memsize  buffer;
 			LogLevel ll; //ToDo: write log level
 		};
@@ -100,14 +103,15 @@ private:
 		Sym(int32_t i32)  : type(I32),  i32(i32) {}
 		Sym(int64_t i64)  : type(I64),  i64(i64) {}
 		Sym(double d) 	  : type(D),    d(d) {}
-		Sym(string s)	  : type(S),    s(s) {}
-		Sym(boolean b)	  : type(B),    b(b) {}		// "true" = true = 1, "false" = false = 0
-		Sym(shape sh) 	  : type(SH),   sh(sh) {}	// TODO: later
-		Sym(const Vec3d& vec) 	  : type(VEC),  vec(vec) {}	// [1.0,1.0,1.0]
+		Sym(string s)	    : type(S),    s(s) {}
+		Sym(bool b)	      : type(B),    b(b) {}		// "true" = true = 1, "false" = false = 0
+		//		Sym(shape sh) 	  : type(SH),   sh(sh) {}	// TODO: later
+		//		Sym(const Vec3d& vec) 	: type(VEC),  vec(vec) {}	// [1.0,1.0,1.0]
 		Sym(memsize buff) : type(BUFFER), buffer(buffer) {}		// int and a char
 		Sym(LogLevel ll)  : type(LL),   ll(ll){}	// TODO: later
 
 	};
+	#if 0
 	static void convertToUI32(const string& s, Sym* sym){
 		sym.u32=stoul(s);
 	}
@@ -171,6 +175,7 @@ private:
 	static void convertToLL(const string& s, Sym* sym) {
 		
 	}
+	#endif
 
 	
 	std::map<string, Sym*> fields;
@@ -193,7 +198,7 @@ public:
 	double getDouble(const char name[]) const;
 	string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const; */
-
+#if 0
 	template <typename T>
 		T get<T>(Type t) const {
 			if (type != T) {
@@ -201,9 +206,14 @@ public:
 			}
 			return union.t;
 		}
-
-	uint32_t getUInt32() const { 
-		if (type != U32)
+#endif
+	
+	uint32_t getUInt32(const string& name) {
+		const Sym* s = fields[name];
+		if (s == nullptr)
+			throw BadType(__FILE__, __LINE__);
+   			
+		if (s->type != U32)
 			throw BadType(__FILE__, __LINE__);
 		return u32;
 	}
@@ -235,12 +245,13 @@ public:
 		}
 		return s;
 	}
-	boolean getBoolean() const {
+	bool getBoolean() const {
 		if (type != B) {
 			throw BadType(__FILE__, __LINE__);
 		}
 		return b;
 	}
+#if 0
 	shape getShape() const {
 		if (type != SH) {
 			throw BadType(__FILE__, __LINE__);
@@ -253,6 +264,7 @@ public:
 		}
 		return vec;
 	}
+#endif
 	memsize getBuffer() const {
 		if (type != BUFFER) {
 			throw BadType(__FILE__, __LINE__);

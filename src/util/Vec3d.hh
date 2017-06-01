@@ -103,9 +103,9 @@ public:
 	double maxDist(const Vec3d vlist[], const int size)const {
 		return sqrt(maxDistSq(vlist,size));
 	}
-	static Sphere boundingSphere(const Vec3d vlist[]) {
-		Vec3d c = centroid(vlist);
-		return Sphere(c.x,c.y,c.z, c.maxDistSq(vlist));
+	static Sphere boundingSphere(const Vec3d vlist[], size_t n) {
+		Vec3d c = centroid(vlist, n);
+		return Sphere(c.x,c.y,c.z, c.maxDistSq(vlist, n));
 	}
 	// return the plane for a set of points that minimizes R^2 distances
 	//TODO make Plane
