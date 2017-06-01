@@ -138,34 +138,19 @@ private:
 	static void convertToSH(const string& s, Sym* sym) {		// TODO: get the constructor
 		
 	}
-	static void convertToVEC(const string& s, Sym* sym) {
+	static void convertToVEC(const string str, Sym* sym) {
+		string a[3];
+		regex VectorType("(\\d+.?\\d*)");
+		sregex_token_iterator pos(str.cbegin(), str.cend(), VectorType);
+		sregex_token_iterator end;
+		// breaking up string s into three substrings
+		// using substrings to call the vec3d constructor
 		int i = 0;
-		int flag = 0;
-		int mul = 10;
-		double a = 0;
-		double d[3];
-		for (int j = 0; j < s.length(); j++) {
-			if (s[j]==(',')) {
-				d[i] = a;
-				a = 0;
-				mul = 10;
-				flag = 0;
-				i++;
-			}
-			else if (s[j]==('.')){
-				flag = 1;
-				mul = 10;
-			}
-			else if (flag == 0) {
-				a = a * 10 + double(s[j]) - 48;
-			}
-			else if (flag == 1) {
-				a = a + ((double(s[j])) - 48)/mul;
-				mul*=10;
-			}
+		for (; pos != end; pos++) {
+			a[i] = pos->str();
+			i++;
 		}
-		sym.vec=vec3d(d[0],d[1],d[2]);
-		//VEC3D CONSTRUCTOR: Vec3d(double x, double y, double z)
+		sym.vec=Vec3d(a[0], a[1], a[2]);
 	}
 	static void convertToBUFFER(const string& s, Sym* sym) {
 		char mult = s.end();
@@ -215,67 +200,92 @@ public:
    			
 		if (s->type != U32)
 			throw BadType(__FILE__, __LINE__);
-		return u32;
+		return s->u32;
 	}
-	uint64_t getUInt64() const { 
-		if (type != U64)
+	uint64_t getUInt64(const string& name) { 
+		const Sym* s = fields[name];
+		if (s == nullptr)
 			throw BadType(__FILE__, __LINE__);
-		return u64;
+
+		if (s->type != U64)
+			throw BadType(__FILE__, __LINE__);
+		return s->u64;
 	}
-	int32_t getInt32() const { 
-		if (type != I32)
+	int32_t getInt32(const string& name) {
+		const Sym* s = fields[name];
+		if (s == nullptr)
 			throw BadType(__FILE__, __LINE__);
-		return i32;
+
+		if (s->type != I32)
+			throw BadType(__FILE__, __LINE__);
+		return s->i32;
 	}
 
-	int64_t getInt64() const { 
-		if (type != I64)
+	int64_t getInt64(const string& name) {
+		const Sym* s = fields[name];
+		if (s == nullptr)
 			throw BadType(__FILE__, __LINE__);
-		return i64;
+
+		if (s->type != I64)
+			throw BadType(__FILE__, __LINE__);
+		return s->i64;
 	}
-	double getDouble() const {
-		if (type != D) {
+	double getDouble(const string& name) {
+		const Sym* s = fields[name];
+		if (s == nullptr)
+			throw BadType(__FILE__, __LINE__);
+
+		if (s->type != D) {
 			throw BadType(__FILE__, __LINE__);
 		}
-		return d;
+		return s->d;
 	}
-	string getString() const {
-		if (type != S) {
+	string getString(const string& name) {
+		const Sym* s = fields[name];
+		if (s == nullptr)
+			throw BadType(__FILE__, __LINE__);
+
+		if (s->type != S) {
 			throw BadType(__FILE__, __LINE__);
 		}
-		return s;
+		return s->s;
 	}
-	bool getBoolean() const {
-		if (type != B) {
+	bool getBoolean(const string& name) {
+		const Sym* s = fields[name];
+		if (s == nullptr)
+			throw BadType(__FILE__, __LINE__);
+
+		if (s->type != B) {
 			throw BadType(__FILE__, __LINE__);
 		}
-		return b;
+		return s->b;
 	}
 #if 0
 	shape getShape() const {
-		if (type != SH) {
+		if (s->type != SH) {
 			throw BadType(__FILE__, __LINE__);
 		}
-		return sh;
+		return s->sh;
 	}
 	vec3D getVec3D() const {
-		if (type != VEC) {
+		if (s->type != VEC) {
 			throw BadType(__FILE__, __LINE__);
 		}
-		return vec;
+		return s->vec;
 	}
 #endif
-	memsize getBuffer() const {
+	memsize getBuffer(const string& name) {
+		const Sym* s = fields[name];
 		if (type != BUFFER) {
 			throw BadType(__FILE__, __LINE__);
 		}
-		return buff;
+		return s->buff;
 	}
-	LogLevel getLogLevel() {
+	LogLevel getLogLevel(const string& name) {
 		if (type != LL) {
 			throw BadType(__FILE__, __LINE__);
 		}
-		return ll;
+		return s->ll;
 	}
 
 	// set the value so that when config file is written, it is updated
@@ -283,11 +293,8 @@ public:
 		fields.set(name, new Sym(D, val));
 	}
 
-
-
 	void filereader(string name){
 	//Should this function return a map instead?
-
 		//Function to read the config file and update it to the hashmap for the configuration
 		string line, key, val;
 		int flag;
@@ -322,6 +329,39 @@ public:
 		}
 		reader.close();
 	}
+
+	enum Type2 {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL, ENDNOW};
+	// This is the same as enum Type
+	// Just made this new one so that mandatory works (sort of)
+	// TODO: Ask if the enum Type needs to be in the struct or not.
+
+	void mandatory(int count...){
+		//To set what all is a mandatory requirement for the hashmap we'll make.
+		va_list args;
+	    va_start(args, count);
+
+	    for (Type tester = va_arg(args, enum Type2); tester != 11; tester = va_arg(args, enum Type2)){
+	    	switch(tester) {
+		    	case 0: cout<< "u32"; break;
+		    	case 1: cout<< "u64"; break;
+		    	case 2: cout<< "32"; break;
+		    	case 3: cout<< "64"; break;
+		    	case 4: cout<< "double"; break;
+		    	case 5: cout<< "string"; break;
+		    	case 6: cout<< "boolean"; break;
+		    	case 7: cout<< "shape"; break;
+		    	case 8: cout<< "vec3D"; break;
+		    	case 9: cout<< "buffer"; break;
+		    	case 10: cout<< "LogLevel"; break;
+		    	case 11: cout<< "EndNow"; break;
+		    	default: break; //this is the end now.
+	    	}
+	    	cout<<endl;
+	    }
+	    va_end(args);
+	    cout<<endl;
+	}
+
 };
 
 #endif
