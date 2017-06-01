@@ -13,7 +13,16 @@ public:
 	void log(Level severity, uint16_t message, uint32_t param) {}
 	void log(Level severity, uint16_t message, uint32_t param1, uint32_t param2) {}
 	// write a variable-length string into the log, pad to 32-bit length
-	void log(Level severity, uint16_t message, const std::string& name) {}
+	void log(Level severity, uint16_t message, const string& name) {}
+	void warn(uint16_t message) {
+		log(WARN, message);
+	}
+	void error(uint16_t message) {
+		log(ERROR, message);
+	}
+	void critical(uint16_t message) {
+		log(CRITICAL, message);
+	}
 };
 
 /**
@@ -22,7 +31,6 @@ public:
 class LogReader {
 public:
 	LogReader(const char filename[], const char language[]);
-	bool hasNext(){}
 	bool hasNext(Log::Level severity) {}
 	bool hasNext(uint16_t message) {}
 
