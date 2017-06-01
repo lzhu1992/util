@@ -7,6 +7,7 @@
 #include <map>
 #include <regex>
 #include <boost/tokenizer.hpp>
+#include <boost/any.hpp>
 #include "geom/Vec3d.hh"
 
 using namespace std;
@@ -28,18 +29,8 @@ using namespace boost;
 	 This is important only if the file is large so at the moment we can ignore
  */
 
-//TODO: Kill if this is no longer used
-int stringToInt(string s) {
-	//Program to convert the strings to integers
-	int x = 0;
-	for (int i = 0; i < s.length(); i++) {
-		x = x * 10 + int(s[i]);
-	}
-}
-
-//TODO: Insert comment describing BadType
-
 class BadType { 
+	//BadType exception is thrown when an incorrect type is passed as a parameter for the "get" functions
 private:
 	const string filename;
 	int lineNum;
@@ -111,6 +102,7 @@ private:
 		Sym(LogLevel ll)  : type(LL),   ll(ll){}	// TODO: later
 
 	};
+	
 	#if 0
 	static void convertToUI32(const string& s, Sym* sym){
 		sym.u32=stoul(s);
@@ -161,10 +153,8 @@ private:
 		
 	}
 	#endif
-
 	
 	std::map<string, Sym*> fields;
-
 
 public:
 	
@@ -183,6 +173,7 @@ public:
 	double getDouble(const char name[]) const;
 	string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const; */
+
 #if 0
 	template <typename T>
 		T get<T>(Type t) const {
@@ -220,7 +211,6 @@ public:
 			throw BadType(__FILE__, __LINE__);
 		return s->i32;
 	}
-
 	int64_t getInt64(const string& name) {
 		const Sym* s = fields[name];
 		if (s == nullptr)
@@ -261,13 +251,21 @@ public:
 		return s->b;
 	}
 #if 0
-	shape getShape() const {
+	shape getShape(const string& name) {
+		const Sym* s = fields[name];
+		if (s == nullptr)
+			throw BadType(__FILE__, __LINE__);
+   			
 		if (s->type != SH) {
 			throw BadType(__FILE__, __LINE__);
 		}
 		return s->sh;
 	}
-	vec3D getVec3D() const {
+	vec3D getVec3D(const string& name) {
+		const Sym* s = fields[name];
+		if (s == nullptr)
+			throw BadType(__FILE__, __LINE__);
+   			
 		if (s->type != VEC) {
 			throw BadType(__FILE__, __LINE__);
 		}
@@ -276,13 +274,20 @@ public:
 #endif
 	memsize getBuffer(const string& name) {
 		const Sym* s = fields[name];
-		if (type != BUFFER) {
+		if (s == nullptr)
+			throw BadType(__FILE__, __LINE__);
+   			
+		if (s->type != BUFFER) {
 			throw BadType(__FILE__, __LINE__);
 		}
 		return s->buff;
 	}
-	LogLevel getLogLevel(const string& name) {
-		if (type != LL) {
+	LogLevel getLogLevel(cconst string& name) {
+		const Sym* s = fields[name];
+		if (s == nullptr)
+			throw BadType(__FILE__, __LINE__);
+   			
+		if (s->type != LL) {
 			throw BadType(__FILE__, __LINE__);
 		}
 		return s->ll;
