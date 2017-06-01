@@ -69,9 +69,9 @@ private:
 		static const ConversionFunc converters[] = {convertToUI32, convertToUI64,
 		convertToI32, convertToI64, convertToD, convertToB, convertToSH,
 		convertToVEC, convertToBUFFER, convertToLL}; //this array will contain all the
-#endif
 		// function names so that we can retrieve the function in O(1) time
 		// It is an array of function pointers.
+#endif
 
 		Type type;
 		union {
@@ -80,12 +80,12 @@ private:
 			int32_t  i32;
 			int64_t  i64;
 			double   d;
-			string   s;
+			string   *s;
 			bool	 b;
 			//			shape    sh; //ToDo: write shape in the relevant header
 			//			vec3D    vec; //ToDo: check spelling of vec3D when we incldue the header
-			memsize  buffer;
-			LogLevel ll; //ToDo: write log level
+			memsize  *buffer;
+			//LogLevel ll; //ToDo: write log level
 		};
 
 		//Constructors
@@ -99,10 +99,10 @@ private:
 		//		Sym(shape sh) 	  : type(SH),   sh(sh) {}	// TODO: later
 		//		Sym(const Vec3d& vec) 	: type(VEC),  vec(vec) {}	// [1.0,1.0,1.0]
 		Sym(memsize buff) : type(BUFFER), buffer(buffer) {}		// int and a char
-		Sym(LogLevel ll)  : type(LL),   ll(ll){}	// TODO: later
+		//Sym(LogLevel ll)  : type(LL),   ll(ll){}	// TODO: later
 
 	};
-	
+
 	#if 0
 	static void convertToUI32(const string& s, Sym* sym){
 		sym.u32=stoul(s);
@@ -184,6 +184,9 @@ public:
 		}
 #endif
 	
+
+	//TODO: For the new data types we need to get data from the pointers and not just from the sym* directly
+	//take care of the classes and strings now.
 	uint32_t getUInt32(const string& name) {
 		const Sym* s = fields[name];
 		if (s == nullptr)
