@@ -78,7 +78,7 @@ private:
 			string   s; //Can unions contain strings?
 			bool	 b;
 			Shape    sh; //ToDo: write shape in the relevant header
-			Vec3d    vec; //ToDo: check spelling of vec3D when we incldue the header
+			Vec3d    vec; 
 			memsize  buffer;
 			LogLevel ll; //ToDo: write log level
 		};
