@@ -2,6 +2,7 @@
 #define CONFIG_HH_
 
 #include <cstdint>
+#include <cstdarg>
 #include <string>
 #include <fstream>
 #include <map>
@@ -153,7 +154,8 @@ private:
 		}
 	#endif
 	
-	std::map<string, Sym*> fields;
+	std::map<string, int> fields1;
+	std::map<string, string> fields2;
 
 public:
 	
@@ -337,15 +339,13 @@ public:
 					val = t;
 			}
 			//fields[key]=val;
+			fields[key] = Config::Sym::s;
 		    //TODO: change this from string to the type of data we need
 		}
 		reader.close();
 	}
 
-	void mandatory(...) {}
-
 	void optional(...) {}
-
 
 	#if 0 //Commented this because of some small bug fixes.
 		enum Type2 {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL, ENDNOW};
