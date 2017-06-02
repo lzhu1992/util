@@ -11,12 +11,6 @@
 #include<fstream>
 #include<string>
 using namespace std;
-class Buffer {
-private:
-    size_t Size;
-    char * Buffer;
-    size_t available;
-    char *p;
 public:
     void flush {
 	    write();
