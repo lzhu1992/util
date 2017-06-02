@@ -94,7 +94,7 @@ private:
 		Sym(int32_t i32)  : type(I32),  i32(i32) {}
 		Sym(int64_t i64)  : type(I64),  i64(i64) {}
 		Sym(double d) 	  : type(D),    d(d) {}
-		Sym(string s)	    : type(S),    s(s) {}
+		Sym(string *str)	    : type(S),    s(str) {}
 		Sym(bool b)	      : type(B),    b(b) {}		// "true" = true = 1, "false" = false = 0
 		//		Sym(shape sh) 	  : type(SH),   sh(sh) {}	// TODO: later
 		//		Sym(const Vec3d& vec) 	: type(VEC),  vec(vec) {}	// [1.0,1.0,1.0]
@@ -192,7 +192,7 @@ public:
 		if (s == nullptr)
 			throw BadType(__FILE__, __LINE__);
    			
-		if (s->type != U32)
+		if (s->type != Sym::U32)
 			throw BadType(__FILE__, __LINE__);
 		return s->u32;
 	}
@@ -201,7 +201,7 @@ public:
 		if (s == nullptr)
 			throw BadType(__FILE__, __LINE__);
 
-		if (s->type != U64)
+		if (s->type != Sym::U64)
 			throw BadType(__FILE__, __LINE__);
 		return s->u64;
 	}
@@ -210,7 +210,7 @@ public:
 		if (s == nullptr)
 			throw BadType(__FILE__, __LINE__);
 
-		if (s->type != I32)
+		if (s->type != Sym::I32)
 			throw BadType(__FILE__, __LINE__);
 		return s->i32;
 	}
@@ -219,7 +219,7 @@ public:
 		if (s == nullptr)
 			throw BadType(__FILE__, __LINE__);
 
-		if (s->type != I64)
+		if (s->type != Sym::I64)
 			throw BadType(__FILE__, __LINE__);
 		return s->i64;
 	}
@@ -228,32 +228,33 @@ public:
 		if (s == nullptr)
 			throw BadType(__FILE__, __LINE__);
 
-		if (s->type != D) {
+		if (s->type != Sym::D) {
 			throw BadType(__FILE__, __LINE__);
 		}
 		return s->d;
 	}
 	string getString(const string& name) {
-		const Sym* s = fields[name];
-		if (s == nullptr)
+		const Sym* sim = fields[name];
+		if (sim == nullptr)
 			throw BadType(__FILE__, __LINE__);
 
-		if (s->type != S) {
+		if (sim->type != Sym::S) {
 			throw BadType(__FILE__, __LINE__);
 		}
-		return s->s;
+		return sim->s;
 	}
 	bool getBoolean(const string& name) {
 		const Sym* s = fields[name];
 		if (s == nullptr)
 			throw BadType(__FILE__, __LINE__);
 
-		if (s->type != B) {
+		if (s->type != Sym::B) {
 			throw BadType(__FILE__, __LINE__);
 		}
 		return s->b;
 	}
 #if 0
+// Removed these for the timebeing so that we can fix other issues
 	shape getShape(const string& name) {
 		const Sym* s = fields[name];
 		if (s == nullptr)
@@ -274,7 +275,6 @@ public:
 		}
 		return s->vec;
 	}
-#endif
 	memsize getBuffer(const string& name) {
 		const Sym* s = fields[name];
 		if (s == nullptr)
@@ -285,7 +285,7 @@ public:
 		}
 		return s->buff;
 	}
-	LogLevel getLogLevel(cconst string& name) {
+	LogLevel getLogLevel(const string& name) {
 		const Sym* s = fields[name];
 		if (s == nullptr)
 			throw BadType(__FILE__, __LINE__);
@@ -295,14 +295,19 @@ public:
 		}
 		return s->ll;
 	}
+#endif
 
 	// set the value so that when config file is written, it is updated
 	void set(const char name[], double val) {
-		fields.set(name, new Sym(D, val));
+		//TODO: PRAY that val is a double when we call the constructor.
+		//fields.set(name, Sym(val));
+		const Sym* sVal = Sym(val);
+		fields[name] = sVal;
 	}
 
 	void filereader(string name){
 	//Should this function return a map instead?
+	//TODO: Change the hashmap allocator at the end of this function
 		//Function to read the config file and update it to the hashmap for the configuration
 		string line, key, val;
 		int flag;
@@ -332,12 +337,14 @@ public:
 				else
 					val = t;
 			}
-			fields[key]=val;
+			//fields[key]=val;
 		    //TODO: change this from string to the type of data we need
 		}
 		reader.close();
 	}
 
+
+#if 0 //Commented this because of some small bug fixes.
 	enum Type2 {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL, ENDNOW};
 	// This is the same as enum Type
 	// Just made this new one so that mandatory works (sort of)
@@ -348,7 +355,7 @@ public:
 		va_list args;
 	    va_start(args, count);
 
-	    for (Type tester = va_arg(args, enum Type2); tester != 11; tester = va_arg(args, enum Type2)){
+	    for (Type2 tester = va_arg(args, enum Type2); tester != 11; tester = va_arg(args, enum Type2)){
 	    	switch(tester) {
 		    	case 0: cout<< "u32"; break;
 		    	case 1: cout<< "u64"; break;
@@ -369,6 +376,8 @@ public:
 	    va_end(args);
 	    cout<<endl;
 	}
+// This contains a small mandatory()
+#endif
 
 };
 
