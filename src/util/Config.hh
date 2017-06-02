@@ -104,54 +104,54 @@ private:
 	};
 
 	#if 0
-	static void convertToUI32(const string& s, Sym* sym){
-		sym.u32=stoul(s);
-	}
-	static void convertToUI64(const string& s, Sym* sym){
-		sym.u64=stoul(s);
-	}
-	static void convertToI32(const string& s, Sym* sym){
-		sym.i32=stoi(s);
-	}
-	static void convertToI64(const string& s, Sym* sym){
-		sym.i64=stoi(s);
-	}
-	static void convertToD(const string& s, Sym* sym) {
-		sym.d=stod(s);
-	}
-	static void convertToB(const string& s, Sym* sym) {
-		if (s.compare("true") == 0) {
-			sym.b=1;
+		static void convertToUI32(const string& s, Sym* sym){
+			sym.u32=stoul(s);
 		}
-		else {
-			sym.b=0;
+		static void convertToUI64(const string& s, Sym* sym){
+			sym.u64=stoul(s);
 		}
-	}
-	static void convertToSH(const string& s, Sym* sym) {		// TODO: get the constructor
-		
-	}
-	static void convertToVEC(const string str, Sym* sym) {
-		string a[3];
-		regex VectorType("(\\d+.?\\d*)");
-		sregex_token_iterator pos(str.cbegin(), str.cend(), VectorType);
-		sregex_token_iterator end;
-		// breaking up string s into three substrings
-		// using substrings to call the vec3d constructor
-		int i = 0;
-		for (; pos != end; pos++) {
-			a[i] = pos->str();
-			i++;
+		static void convertToI32(const string& s, Sym* sym){
+			sym.i32=stoi(s);
 		}
-		sym.vec=Vec3d(a[0], a[1], a[2]);
-	}
-	static void convertToBUFFER(const string& s, Sym* sym) {
-		char mult = s.end();
-		s.assign(s.begin(), s.end()-1); //Removing the last character
-		sym.buffer = buffer(stoi(s);, mult);
-	}
-	static void convertToLL(const string& s, Sym* sym) {
-		
-	}
+		static void convertToI64(const string& s, Sym* sym){
+			sym.i64=stoi(s);
+		}
+		static void convertToD(const string& s, Sym* sym) {
+			sym.d=stod(s);
+		}
+		static void convertToB(const string& s, Sym* sym) {
+			if (s.compare("true") == 0) {
+				sym.b=1;
+			}
+			else {
+				sym.b=0;
+			}
+		}
+		static void convertToSH(const string& s, Sym* sym) {		// TODO: get the constructor
+			
+		}
+		static void convertToVEC(const string str, Sym* sym) {
+			string a[3];
+			regex VectorType("(\\d+.?\\d*)");
+			sregex_token_iterator pos(str.cbegin(), str.cend(), VectorType);
+			sregex_token_iterator end;
+			// breaking up string s into three substrings
+			// using substrings to call the vec3d constructor
+			int i = 0;
+			for (; pos != end; pos++) {
+				a[i] = pos->str();
+				i++;
+			}
+			sym.vec=Vec3d(a[0], a[1], a[2]);
+		}
+		static void convertToBUFFER(const string& s, Sym* sym) {
+			char mult = s.end();
+			s.assign(s.begin(), s.end()-1); //Removing the last character
+			sym.buffer = buffer(stoi(s);, mult);
+		}
+		static void convertToLL(const string& s, Sym* sym) {
+			
+		}
 	#endif
 	
 	std::map<string, Sym*> fields;
@@ -164,14 +164,14 @@ public:
 	// TODO: Find out C++ syntax to have one name get<type>
 	// TODO: Check if "const char name[]" is needed in the parameter
 	/*
-	uint8_t getUInt8(const char name[]) const;
-	uint16_t getUInt16(const char name[]) const;
-	uint32_t getUInt32(const char name[]) const;
-	uint64_t getUInt64(const char name[]) const;
-	//TODO:	template<typename T>
-	//	get<T>(const char name[]) {
-	double getDouble(const char name[]) const;
-	string getString(const char name[]) const;
+		uint8_t getUInt8(const char name[]) const;
+		uint16_t getUInt16(const char name[]) const;
+		uint32_t getUInt32(const char name[]) const;
+		uint64_t getUInt64(const char name[]) const;
+		//TODO:	template<typename T>
+		//	get<T>(const char name[]) {
+		double getDouble(const char name[]) const;
+		string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const; */
 
 #if 0
