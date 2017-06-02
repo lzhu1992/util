@@ -153,9 +153,7 @@ private:
 			
 		}
 	#endif
-	
-	std::map<string, int> fields1;
-	std::map<string, string> fields2;
+
 
 public:
 	
@@ -347,38 +345,40 @@ public:
 
 	void optional(...) {}
 
-	#if 0 //Commented this because of some small bug fixes.
-		enum Type2 {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL, ENDNOW};
-		// This is the same as enum Type
-		// Just made this new one so that mandatory works (sort of)
-		// TODO: Ask if the enum Type needs to be in the struct or not.
-		void mandatory(int count...){
-			//To set what all is a mandatory requirement for the hashmap we'll make.
-			va_list args;
-		    va_start(args, count);
-		    for (Type2 tester = va_arg(args, enum Type2); tester != 11; tester = va_arg(args, enum Type2)){
-		    	switch(tester) {
-			    	case 0: cout<< "u32"; break;
-			    	case 1: cout<< "u64"; break;
-			    	case 2: cout<< "32"; break;
-			    	case 3: cout<< "64"; break;
-			    	case 4: cout<< "double"; break;
-			    	case 5: cout<< "string"; break;
-			    	case 6: cout<< "boolean"; break;
-			    	case 7: cout<< "shape"; break;
-			    	case 8: cout<< "vec3D"; break;
-			    	case 9: cout<< "buffer"; break;
-			    	case 10: cout<< "LogLevel"; break;
-			    	case 11: cout<< "EndNow"; break;
-			    	default: break; //this is the end now.
-		    	}
-		    	cout<<endl;
-		    }
-		    va_end(args);
-		    cout<<endl;
-		}
-	// This contains a small mandatory()
-	#endif
+	std::map<string, int> fields1; // Key to type map, 
+	std::map<string, string> fields2; // Key to data map, everything string
+
+//Commented this because of some small bug fixes.
+	enum Type2 {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL, ENDNOW};
+	// This is the same as enum Type
+	// Just made this new one so that mandatory works (sort of)
+	// TODO: Ask if the enum Type needs to be in the struct or not.
+	void mandatory(int count...){
+		//To set what all is a mandatory requirement for the hashmap we'll make.
+		va_list args;
+	    va_start(args, count);
+	    for (Type2 tester = va_arg(args, enum Type2); tester != 11; tester = va_arg(args, enum Type2)){
+	    	switch(tester) {
+		    	case 0: cout<< "u32"; break;
+		    	case 1: cout<< "u64"; break;
+		    	case 2: cout<< "32"; break;
+		    	case 3: cout<< "64"; break;
+		    	case 4: cout<< "double"; break;
+		    	case 5: cout<< "string"; break;
+		    	case 6: cout<< "boolean"; break;
+		    	case 7: cout<< "shape"; break;
+		    	case 8: cout<< "vec3D"; break;
+		    	case 9: cout<< "buffer"; break;
+		    	case 10: cout<< "LogLevel"; break;
+		    	case 11: cout<< "EndNow"; break;
+		    	default: break; //this is the end now.
+	    	}
+	    	cout<<endl;
+	    }
+	    va_end(args);
+	    cout<<endl;
+	}
+// This contains a small mandatory()
 
 };
 
