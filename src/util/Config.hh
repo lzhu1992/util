@@ -182,8 +182,35 @@ public:
 				return union.t;
 			}
 	#endif
-	
 
+	uint32_t getUInt32 (const string& name){
+		return stoui(fields[name]);
+	}
+
+	uint64_t getUInt64 (const string& name){
+		return stoul(fields[name]);
+	}
+
+	int32_t getInt32 (const string& name){
+		return stoi(fields[name]);
+	}
+
+	int64_t getInt64 (const string& name){
+		return stol(fields[name]);
+	}
+
+	bool convertToB(const string& name) {
+		if (fields[name].compare("true") == 0)
+			return 1;
+		else 
+			return 0;
+	}
+
+	double getDouble (const string& name){
+		return stod(fields[name]);
+	}
+	
+	#if 0 //Making these again for return values. Look above this
 	//TODO: For the new data types we need to get data from the pointers and not just from the sym* directly
 	//take care of the classes and strings now.
 	uint32_t getUInt32(const string& name) {
@@ -252,6 +279,8 @@ public:
 		}
 		return s->b;
 	}
+	#endif
+
 	#if 0
 	// Removed these for the timebeing so that we can fix other issues
 		shape getShape(const string& name) {
@@ -364,7 +393,6 @@ public:
 	    	str = va_arg(args, string);
 	    	m = va_arg(args, enum Type2);
 	    	fields_M[str] = m;
-	    	}
 	    }
 	    va_end(args);
 	}
@@ -384,21 +412,32 @@ public:
 	    }
 	    va_end(args);
 	}
-		    	// switch() {
-		    	// case 0: 
 
-		    	// case 1: cout<< "u64"; break;
-		    	// case 2: cout<< "32"; break;
-		    	// case 3: cout<< "64"; break;
-		    	// case 4: cout<< "double"; break;
-		    	// case 5: cout<< "string"; break;
-		    	// case 6: cout<< "boolean"; break;
-		    	// case 7: cout<< "shape"; break;
-		    	// case 8: cout<< "vec3D"; break;
-		    	// case 9: cout<< "buffer"; break;
-		    	// case 10: cout<< "LogLevel"; break;
-		    	// case 11: cout<< "EndNow"; break;
-		    	// default: break; //this is the end now.
+	template<typename t>
+	void getData(*t val, const string name){ //val is where we want the data stored
+		// name is the key of the hashmap
+		int type;
+		if (fields_M[name] != nullptr){
+			type = fields_M[name]; goto gg;
+		}
+		else if (fields_O[name] != nullptr){
+			type = fields_M[name]; goto gg;
+		}
+		else
+			//throw not found exception.
+		gg:
+		switch (type){
+			case 0: val = getUInt32(fields[name]); break;
+			case 1: val = getUInt64(fields[name]); break;
+			case 2: val = getInt32(fields[name]); break;
+			case 3: val = getInt64(fields[name]); break;
+			case 4: val = getDouble(fields[name]); break;
+			case 5: val = fields[name]; break; //This case is string;
+			case 6: val = getBoolean(fields[name]); break;
+			default: break;
+		}
+
+	}
 };
 
 #endif
