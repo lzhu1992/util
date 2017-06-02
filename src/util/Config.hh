@@ -338,6 +338,7 @@ public:
 					val = t;
 			}
 			//fields[key]=val;
+			fields[key] = Config::Sym::s;
 		    //TODO: change this from string to the type of data we need
 		}
 		reader.close();
