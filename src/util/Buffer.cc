@@ -13,10 +13,22 @@
 using namespace std;
 class Buffer {
 private:
-    int initialSize;
-    char * initialSize;
+    size_t Size;
+    char * Buffer;
+    size_t available;
+    char *p;
 public:
-    Buffer(int initialSize) {
+    void flush {
+	    write();
+	    p = buf;
+	    available = size;
+    } 
+    void write () {
+    }
+    void writemeta() {
+    }
+	    
+    void Buffer(int initialSize) {
         data = new char[initialSize];
         data[0] = 0;
         size = initialSize;
