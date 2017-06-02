@@ -2,6 +2,8 @@
 #define VEC3D_HH_
 
 #include <iostream>
+#include <string>
+#include <cstdlib>
 #include <cmath>
 #include "Sphere.hh"
 #include "Cube.hh"
@@ -12,12 +14,12 @@ namespace geom {
 class Vec3d {
 public:
   double x,y,z;
-  /*Vec3d(string a, string b, string c) {
- +  		// added by David Kim (to help with converting string to Vec3d)
- +  		x = stod(a);
- +		y = stod(b);
- +		z = stod(c);
- +  	}*/
+  Vec3d(char* a, char* b, char* c) {
+    // added by David Kim (to help with converting string to Vec3d)
+    x = atof(a);
+    y = atof(b);
+    z = atof(c);
+  }
   //constructor takes in 3 doubles
   Vec3d(double x, double y, double z) : x(x), y(y), z(z) {}
   friend Vec3d operator +(const Vec3d& a, const Vec3d& b) {
