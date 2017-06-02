@@ -29,16 +29,15 @@ using namespace boost;
 	 This is important only if the file is large so at the moment we can ignore
  */
 
-class BadType { 
-	//BadType exception is thrown when an incorrect type is passed as a parameter for the "get" functions
-private:
-	const string filename;
-	int lineNum;
-public:
-	BadType(const char filename[], int lineNum) : lineNum(lineNum), filename(filename) {}
-	friend ostream& operator <<(ostream& s, const BadType& e) {
-		return s<<"Bad Type at " << e.filename << ": " << e.lineNum;
-	}
+class BadType { //BadType exception is thrown when an incorrect type is passed as a parameter for the "get" functions
+	private:
+		const string filename;
+		int lineNum;
+	public:
+		BadType(const char filename[], int lineNum) : lineNum(lineNum), filename(filename) {}
+		friend ostream& operator <<(ostream& s, const BadType& e) {
+			return s<<"Bad Type at " << e.filename << ": " << e.lineNum;
+		}
 };
 
 class Config {
@@ -343,9 +342,9 @@ public:
 		reader.close();
 	}
 
-	void mandatory() {}
+	void mandatory(...) {}
 
-	void optional() {}
+	void optional(...) {}
 
 
 	#if 0 //Commented this because of some small bug fixes.
