@@ -36205,7 +36205,9 @@
         <df name="util">
           <df name="geom">
             <df name="test">
+              <in>TestCube.cc</in>
               <in>TestPlane.cc</in>
+              <in>TestSphere.cc</in>
               <in>TestVec3d.cc</in>
             </df>
             <in>ComponentList.hh</in>
