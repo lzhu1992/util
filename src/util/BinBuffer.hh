@@ -10,7 +10,7 @@ private:
     size_t available;
     char *p;
 public:
- void Buffer(int initialSize) {
+ Buffer(int initialSize) {
         data = new char[initialSize];
         data[0] = 0;
         size = initialSize;
