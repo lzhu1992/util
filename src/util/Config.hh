@@ -65,13 +65,13 @@ private:
 		typedef void (*ConversionFunc)(const string &a, Sym *s); // this typedef is to
 		// make all the conversion function pointers. 
 
-#if 0
-		static const ConversionFunc converters[] = {convertToUI32, convertToUI64,
-		convertToI32, convertToI64, convertToD, convertToB, convertToSH,
-		convertToVEC, convertToBUFFER, convertToLL}; //this array will contain all the
-		// function names so that we can retrieve the function in O(1) time
-		// It is an array of function pointers.
-#endif
+		#if 0
+			static const ConversionFunc converters[] = {convertToUI32, convertToUI64,
+			convertToI32, convertToI64, convertToD, convertToB, convertToSH,
+			convertToVEC, convertToBUFFER, convertToLL}; //this array will contain all the
+			// function names so that we can retrieve the function in O(1) time
+			// It is an array of function pointers.
+		#endif
 
 		Type type;
 		union {
@@ -174,15 +174,15 @@ public:
 		string getString(const char name[]) const;
 	vector<uint32_t> getVector(const char name[]) const; */
 
-#if 0
-	template <typename T>
-		T get<T>(Type t) const {
-			if (type != T) {
-				throw BadType(__FILE__,__LINE__);
+	#if 0
+		template <typename T>
+			T get<T>(Type t) const {
+				if (type != T) {
+					throw BadType(__FILE__,__LINE__);
+				}
+				return union.t;
 			}
-			return union.t;
-		}
-#endif
+	#endif
 	
 
 	//TODO: For the new data types we need to get data from the pointers and not just from the sym* directly
@@ -233,7 +233,7 @@ public:
 		}
 		return s->d;
 	}
-	string getString(const string& name) {
+	string* getString(const string& name) {
 		const Sym* sim = fields[name];
 		if (sim == nullptr)
 			throw BadType(__FILE__, __LINE__);
@@ -253,55 +253,55 @@ public:
 		}
 		return s->b;
 	}
-#if 0
-// Removed these for the timebeing so that we can fix other issues
-	shape getShape(const string& name) {
-		const Sym* s = fields[name];
-		if (s == nullptr)
-			throw BadType(__FILE__, __LINE__);
-   			
-		if (s->type != SH) {
-			throw BadType(__FILE__, __LINE__);
+	#if 0
+	// Removed these for the timebeing so that we can fix other issues
+		shape getShape(const string& name) {
+			const Sym* s = fields[name];
+			if (s == nullptr)
+				throw BadType(__FILE__, __LINE__);
+	   			
+			if (s->type != SH) {
+				throw BadType(__FILE__, __LINE__);
+			}
+			return s->sh;
 		}
-		return s->sh;
-	}
-	vec3D getVec3D(const string& name) {
-		const Sym* s = fields[name];
-		if (s == nullptr)
-			throw BadType(__FILE__, __LINE__);
-   			
-		if (s->type != VEC) {
-			throw BadType(__FILE__, __LINE__);
+		vec3D getVec3D(const string& name) {
+			const Sym* s = fields[name];
+			if (s == nullptr)
+				throw BadType(__FILE__, __LINE__);
+	   			
+			if (s->type != VEC) {
+				throw BadType(__FILE__, __LINE__);
+			}
+			return s->vec;
 		}
-		return s->vec;
-	}
-	memsize getBuffer(const string& name) {
-		const Sym* s = fields[name];
-		if (s == nullptr)
-			throw BadType(__FILE__, __LINE__);
-   			
-		if (s->type != BUFFER) {
-			throw BadType(__FILE__, __LINE__);
+		memsize getBuffer(const string& name) {
+			const Sym* s = fields[name];
+			if (s == nullptr)
+				throw BadType(__FILE__, __LINE__);
+	   			
+			if (s->type != BUFFER) {
+				throw BadType(__FILE__, __LINE__);
+			}
+			return s->buff;
 		}
-		return s->buff;
-	}
-	LogLevel getLogLevel(const string& name) {
-		const Sym* s = fields[name];
-		if (s == nullptr)
-			throw BadType(__FILE__, __LINE__);
-   			
-		if (s->type != LL) {
-			throw BadType(__FILE__, __LINE__);
+		LogLevel getLogLevel(const string& name) {
+			const Sym* s = fields[name];
+			if (s == nullptr)
+				throw BadType(__FILE__, __LINE__);
+	   			
+			if (s->type != LL) {
+				throw BadType(__FILE__, __LINE__);
+			}
+			return s->ll;
 		}
-		return s->ll;
-	}
-#endif
+	#endif
 
 	// set the value so that when config file is written, it is updated
 	void set(const char name[], double val) {
-		//TODO: PRAY that val is a double when we call the constructor.
 		//fields.set(name, Sym(val));
-		const Sym* sVal = Sym(val);
+		Sym s = Sym(val);
+		Sym *sVal = &s;
 		fields[name] = sVal;
 	}
 
@@ -344,41 +344,43 @@ public:
 		reader.close();
 	}
 
+	void mandatory() {}
 
-#if 0 //Commented this because of some small bug fixes.
-	enum Type2 {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL, ENDNOW};
-	// This is the same as enum Type
-	// Just made this new one so that mandatory works (sort of)
-	// TODO: Ask if the enum Type needs to be in the struct or not.
+	void optional() {}
 
-	void mandatory(int count...){
-		//To set what all is a mandatory requirement for the hashmap we'll make.
-		va_list args;
-	    va_start(args, count);
 
-	    for (Type2 tester = va_arg(args, enum Type2); tester != 11; tester = va_arg(args, enum Type2)){
-	    	switch(tester) {
-		    	case 0: cout<< "u32"; break;
-		    	case 1: cout<< "u64"; break;
-		    	case 2: cout<< "32"; break;
-		    	case 3: cout<< "64"; break;
-		    	case 4: cout<< "double"; break;
-		    	case 5: cout<< "string"; break;
-		    	case 6: cout<< "boolean"; break;
-		    	case 7: cout<< "shape"; break;
-		    	case 8: cout<< "vec3D"; break;
-		    	case 9: cout<< "buffer"; break;
-		    	case 10: cout<< "LogLevel"; break;
-		    	case 11: cout<< "EndNow"; break;
-		    	default: break; //this is the end now.
-	    	}
-	    	cout<<endl;
-	    }
-	    va_end(args);
-	    cout<<endl;
-	}
-// This contains a small mandatory()
-#endif
+	#if 0 //Commented this because of some small bug fixes.
+		enum Type2 {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL, ENDNOW};
+		// This is the same as enum Type
+		// Just made this new one so that mandatory works (sort of)
+		// TODO: Ask if the enum Type needs to be in the struct or not.
+		void mandatory(int count...){
+			//To set what all is a mandatory requirement for the hashmap we'll make.
+			va_list args;
+		    va_start(args, count);
+		    for (Type2 tester = va_arg(args, enum Type2); tester != 11; tester = va_arg(args, enum Type2)){
+		    	switch(tester) {
+			    	case 0: cout<< "u32"; break;
+			    	case 1: cout<< "u64"; break;
+			    	case 2: cout<< "32"; break;
+			    	case 3: cout<< "64"; break;
+			    	case 4: cout<< "double"; break;
+			    	case 5: cout<< "string"; break;
+			    	case 6: cout<< "boolean"; break;
+			    	case 7: cout<< "shape"; break;
+			    	case 8: cout<< "vec3D"; break;
+			    	case 9: cout<< "buffer"; break;
+			    	case 10: cout<< "LogLevel"; break;
+			    	case 11: cout<< "EndNow"; break;
+			    	default: break; //this is the end now.
+		    	}
+		    	cout<<endl;
+		    }
+		    va_end(args);
+		    cout<<endl;
+		}
+	// This contains a small mandatory()
+	#endif
 
 };
 
