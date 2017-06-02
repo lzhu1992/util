@@ -343,6 +343,10 @@ public:
 		reader.close();
 	}
 
+	void mandatory() {}
+
+	void optional() {}
+
 
 	#if 0 //Commented this because of some small bug fixes.
 		enum Type2 {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL, ENDNOW};
