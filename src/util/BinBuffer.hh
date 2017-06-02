@@ -4,6 +4,12 @@
 
  */
 class Buffer {
+private:
+    size_t Size;
+    char * Buffer;
+    size_t available;
+    char *p;
+public:
  void Buffer(int initialSize) {
         data = new char[initialSize];
         data[0] = 0;
