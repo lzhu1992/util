@@ -2,6 +2,7 @@
 #define CONFIG_HH_
 
 #include <cstdint>
+#include <cstdarg>
 #include <string>
 #include <fstream>
 #include <map>
@@ -154,7 +155,8 @@ private:
 		}
 	#endif
 	
-	std::map<string, Sym*> fields;
+	std::map<string, int> fields1;
+	std::map<string, string> fields2;
 
 public:
 	
@@ -343,8 +345,12 @@ public:
 		}
 		reader.close();
 	}
-
-	void mandatory() {}
+//enum Type {U32, U64, I32, I64, D, S, B, SH, VEC, BUFFER, LL};
+	void mandatory(int randomInt...) {
+		va_list list;
+		va_start (list, randomInt);
+		
+	}
 
 	void optional() {}
 
