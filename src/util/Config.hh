@@ -308,7 +308,7 @@ public:
 		int flag;
 		regex comment ("#.*$");
 		regex whitespace ("^ +| +$|( ) +|\\t+");
-		regex checkVector("(\[\d+(.\d*),\d+(.\d*),\d+(.\d*)\])"); //this reads vector in form of [double,double,double]
+		regex checkVector("(\\[\\d+(.\\d*),\\d+(.\\d*),\\d+(.\\d*)\\])"); //this reads vector in form of [double,double,double]
 		ifstream reader;
 		reader.open(name, ios::in);
 		while(!reader.eof()){
@@ -373,3 +373,4 @@ public:
 };
 
 #endif
+
