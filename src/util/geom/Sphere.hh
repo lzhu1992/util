@@ -10,11 +10,12 @@
 #include <iostream>
 #include <cmath>
 #include "Cube.hh"
+constexpr double PI = 3.14159265358979323846;
+
 
 namespace geom {
 class Sphere {
 public:
-        const static double PI= 3.14159265358979323846;
 	double x,y,z,r;	//origin:x, y, z AND radius: r
         //constructor takes in center point and radius
 	Sphere(double x, double y, double z, double r) : x(x), y(y), z(z), r(r) {

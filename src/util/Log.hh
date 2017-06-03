@@ -4,11 +4,16 @@
 #include <cstdint>
 #include <string>
 class Log {
-
+public:
+	enum class Level { INFO, DEBUG, WARN, ERROR, CRITICAL };
+private:
+	Level lev;
 public:
 	Log();
 	void setLogFile(const char filename[]);
-	enum class Level { INFO, DEBUG, WARN, ERROR, CRITICAL };
+	void setLevel(Level L) {
+		lev = L;
+	}
 	void log(Level severity, uint16_t message) {}
 	void log(Level severity, uint16_t message, uint32_t param) {}
 	void log(Level severity, uint16_t message, uint32_t param1, uint32_t param2) {}
