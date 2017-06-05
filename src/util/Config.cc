@@ -1,7 +1,11 @@
 #include "util/Config.hh"
 
 void Config::save(const string& filename) {
-	cout << "Saving Config to " << filename << '\n';
+	cerr << "Saving Config to " << filename << '\n';
+	ofstream saveFile(filename);
+	//	for (auto p = f.begin(); p != f.end(); ++p) {
+	//		cout << p->first << "==>" << p->second << '\n';
+	//	}
 }
 
 const regex Config::commentOrWhitespace("#.*$|^\\s*$");
