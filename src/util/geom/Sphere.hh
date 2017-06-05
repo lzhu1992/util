@@ -10,11 +10,13 @@
 #include <iostream>
 #include <cmath>
 #include "Cube.hh"
-constexpr double PI = 3.14159265358979323846;
 
+//#include "Constants.hh"
+const double PI= 3.14159265358979323846;
 
 namespace geom {
 class Sphere {
+  
 public:
 	double x,y,z,r;	//origin:x, y, z AND radius: r
         //constructor takes in center point and radius
@@ -31,7 +33,7 @@ public:
 	Cube boundingCube() const {
 		return Cube(x,y,z,r*2);
 	}
-        friend std::ostream& operator <<(std::ostream& s, const Sphere& c) {
+  friend std::ostream& operator <<(std::ostream& s, const Sphere& c) {
 		return s << '(' << c.x << ',' << c.y << ',' << c.z << ',' << c.r  << ')';
 	}
 };

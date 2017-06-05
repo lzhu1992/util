@@ -5,7 +5,7 @@
 #include <string>
 class Log {
 public:
-	enum class Level { INFO, DEBUG, WARN, ERROR, CRITICAL };
+	enum Level { INFO, DEBUG, WARN, ERROR, CRITICAL };
 private:
 	Level lev;
 public:
