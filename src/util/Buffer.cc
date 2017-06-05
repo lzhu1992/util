@@ -11,8 +11,45 @@
 #include<fstream>
 #include<string>
 using namespace std;
+class Buffer {
+private:
+    long Size;
+    char * buffer;
+    long avail_size;
+    char *p;
 public:
-    void flush {
+    Buffer() {
+        buffer = new char[Size];
+        buffer[0] = 0;
+        avail_size = 0;
+          }
+    ~Buffer() {
+        delete[] buffer;
+    }
+};
+class Uint1 {
+private:
+    uint8_t size;
+public:
+    Uint1( uint8_t size):size(size) {}
+};
+class Uint2 {
+private:
+    uint16_t size;
+public:
+    Uint2( uint16_t size):size(size) {}
+};
+class Uint3 {
+private:
+    uint32_t size;
+public:
+    Uint3( uint32_t size):size(size) {}
+};
+
+
+
+
+   /* void flush {
 	    write();
 	    p = buf;
 	    available = size;
@@ -20,7 +57,7 @@ public:
     void write () {
     }
     void writemeta() {
-    }
+    }*/
 	    
   
     //Buffer(int initialSize, const char * initialSize) {

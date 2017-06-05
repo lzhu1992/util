@@ -13,7 +13,14 @@ public:
 		 	 "port", Config::UINT16, 
 		 	 "base", Config::STRING, 
 		 	 "foo", Config::STRING);
+	optional(Config::BOOL, false, "benchmark");
 
+		mandatory(4,
+							"x", Config::DOUBLE,
+							"y", Config::DOUBLE,
+							"z", Config::DOUBLE,
+							"port", Config::UINT16
+							);
 		optional(2,
 						 "foo", Config::STRING,
 						 "snarf", Config::UINT64);
