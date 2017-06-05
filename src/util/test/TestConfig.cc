@@ -19,7 +19,7 @@ public:
 		 );
 	optional(Config::BOOL, false, "benchmark");
 
-		mandatory(3,
+		mandatory(4,
 							"x", Config::DOUBLE,
 							"y", Config::DOUBLE,
 							"z", Config::DOUBLE,
