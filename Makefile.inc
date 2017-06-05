@@ -2,4 +2,4 @@ CXX	:=	g++
 DEBUG	:=	-g
 OPT	:=	#-O2
 LDFLAGS	:=	$(DEBUG) $(OPT)
-CFLAGS	:=	$(LDFLAGS) $(INC) -c
+CFLAGS	:=	$(LDFLAGS) $(INC) -std=c++11

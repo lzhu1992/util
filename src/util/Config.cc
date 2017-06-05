@@ -3,9 +3,9 @@
 void Config::save(const string& filename) {
 	cerr << "Saving Config to " << filename << '\n';
 	ofstream saveFile(filename);
-	//	for (auto p = f.begin(); p != f.end(); ++p) {
-	//		cout << p->first << "==>" << p->second << '\n';
-	//	}
+		// for (auto p = f.begin(); p != f.end(); ++p) {
+		// 	cout << p->first << "==>" << p->second << '\n';
+		// }
 }
 
 const regex Config::commentOrWhitespace("#.*$|^\\s*$");
@@ -32,7 +32,12 @@ void Config::load(const string& name) {
 			string name = line.substr(0, sep);
 			string val = line.substr(sep+1);
 			if (types.find(name) != types.end()) {
-			  Type t = types[name];
+			    Type t = types[name];
+				//Sym(t, val);
+				//f[name] = s;
+				//f[name] = new Sym(t, val);
+				// Sym s(t, val);
+				// f[name](s);
 				cout << t << ": " << val << '\n';
 			}
 		}
@@ -47,7 +52,7 @@ void Config::mandatory(int count...) {
 	va_list args;
 	va_start(args, count);
 	for (int i = 0; i < count; i++) {
-		string str = va_arg(args, string);
+		string str = va_arg(args, const char*);
 		Type m = (Type)va_arg(args, int);
 		types[str] = m;
 	}
@@ -58,7 +63,7 @@ void Config::optional(int count...) {
 	va_list args;
 	va_start(args, count);
 	for (int i = 0; i < count; i++) {
-		string str = va_arg(args, string);
+		string str = va_arg(args, const char*);
 		Type m = (Type)va_arg(args, int);
 		optTypes[str] = m;
 	}

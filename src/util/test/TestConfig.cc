@@ -5,36 +5,23 @@ class TestConfig : public Config {
 public:
 	TestConfig() {
 		//TODO: support or?  "x|y|z", Config::DOUBLE
-#if 0
-		//mandatory
-		//		(Config::STRING, "base",
-		//Config::STRING, "protocol",
-		//Config::STRING, "handler",
-		Config::STRING, "logfile",
-		 Config::STRING, "language",
-		 Config::UINT32, "port",
-		 Config::MEMSIZE, "buffer", // allow	64k, 1M, etc as abbr
-		 //		 Config::LogLevel, "loglevel"
-		 Config::ENDNOW //TODO: Write something for EndNow
-		 );
-	optional(Config::BOOL, false, "benchmark");
 
-		mandatory(3,
-							"x", Config::DOUBLE,
-							"y", Config::DOUBLE,
-							"z", Config::DOUBLE,
-							"port", Config::UINT16
-							);
+		mandatory(6, 
+		 	 "x", Config::DOUBLE, 
+		 	 "y", Config::DOUBLE, 
+		 	 "z", Config::DOUBLE, 
+		 	 "port", Config::UINT16, 
+		 	 "base", Config::STRING, 
+		 	 "foo", Config::STRING);
+
 		optional(2,
 						 "foo", Config::STRING,
 						 "snarf", Config::UINT64);
-#endif
 
 }
 };
 
 TestConfig test;
-
 void test1(){
 	test.load("data/test.conf");
 	uint16_t port = test.getUInt16("port");

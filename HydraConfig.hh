@@ -8,8 +8,7 @@
 #include <fstream>  //already exists in config.hh
 #include <regex>    //already exists in config.hh
 #include "config.hh"
-//regex included in config.hh
-using namespace std;
+using namespace std;  //TODO: write out std yourself
 
 /*------------------------------------------------------------------------------------------------
 default heights and lengths, need max and min distances
@@ -30,7 +29,7 @@ TODO:
   Specify the format of the config file
 --------------------------------------------------------------------------------------------------*/
 
-class hydraConf {
+class HydraConf {
 private:
   string fileName;
 public:
@@ -50,7 +49,7 @@ public:
 //---------------------------------//
     double max distance of rail
     double min distance of rail
-//---------------------------------//
+//---------------------------------// NOTE: both arms move in 3D
     double max distance of arm1
     double min distance of arm1
 
@@ -81,7 +80,7 @@ public:
       Bezier
   */
 
-  hydraConf(string file) : fileName(file){}
+  HydraConf(string file) : fileName(file){}
   void loadConfig() {
     /*
     ifstream inp(fileName);     //opening stream to read file
@@ -110,6 +109,7 @@ public:
   }
 };
 
+//TODO: MOVE THESE THINGS IN ANOTHER TEST.CPP
 hydraConf config(insert configuration file here); //global variable
 
 int main(){

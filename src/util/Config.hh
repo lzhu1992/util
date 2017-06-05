@@ -61,9 +61,33 @@ private:
 		};
 
 		//Constructors
-		Sym(uint16_t u16) : type(UINT16),  u32(u32) {}
+		Sym(Type t, const string& val) : type(t) {
+			//TODO: check online for actual integer bit-precision conversions
+			if (t == UINT16)	
+				u16 = stoi(val);
+			else if (t == UINT32)
+				u32 = stoi(val);
+			else if (t == UINT64)
+				u64 = stoi(val);
+			else if (t == INT16)
+				i16 = stoi(val);
+			else if (t == INT32)
+				i32 = stoi(val);
+			else if (t == INT64)
+				i64 = stoi(val);
+			else if (t == DOUBLE)
+				d = stod(val);
+			else if (t == STRING)
+				s = new string(val);
+			else if (t == BOOL) 
+				b = stoi(val);
+			else 
+				throw BadType(__FILE__, __LINE__);
+		}
+		Sym(uint16_t u16) : type(UINT16),  u16(u16) {}
 		Sym(uint32_t u32) : type(UINT32),  u32(u32) {}
 		Sym(uint64_t u64) : type(UINT64),  u64(u64) {}
+		Sym(int16_t i16)  : type(INT16),   i16(i16) {}
 		Sym(int32_t i32)  : type(INT32),   i32(i32) {}
 		Sym(int64_t i64)  : type(INT64),   i64(i64) {}
 		Sym(double d) 	  : type(DOUBLE),  d(d)     {}
@@ -75,9 +99,16 @@ private:
 			if (mul == 'G') size *= 1024*1024*1024;
 			u64 = uint64_t(size);
 		}
+		Sym(const Sym& orig) {
+			memcpy(this, &orig, sizeof(*this));
+			if (type == STRING) {
+				s = new string(orig.s->c_str());
+			}
+		}
 		~Sym() {
 			switch(type) {
 			case STRING: delete [] s; break;
+			default:;
 			}
 		}
 	};
@@ -102,10 +133,14 @@ public:
 	template<typename T>
 	void set(const string& name, T val) {
 		map<string,Sym>::iterator i = f.find(name);
-		if (i == f.end())
+		if (i == f.end()) {
+			f[name] = Sym(val);
 			return;
-		i->first = name;
-		i->second = Sym(val);
+		}
+		//const char *i->first = name.c_str(); 
+		//*i->first = name.c_str();
+		f[name] = Sym(val);
+		//i->second = Sym(val);
 	}
 
 	uint16_t getUInt16 (const string& name) const {
