@@ -105,6 +105,18 @@ private:
 				s = new string(orig.s->c_str());
 			}
 		}
+		// void operator =(const Sym& orig) {
+		// 	if (this != &orig) {
+		// 		~Sym();
+		// 		type = orig.type;
+		// 		s = new string(orig.s->c_str());
+		// 	}
+		// 	return *this;
+		// }
+		Sym& operator =(Sym orig) {
+			swap(*this, orig);
+			return *this;
+		}
 		~Sym() {
 			switch(type) {
 			case STRING: delete [] s; break;
