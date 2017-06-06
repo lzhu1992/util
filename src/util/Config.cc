@@ -1,5 +1,6 @@
 #include "util/Config.hh"
 
+
 void Config::save(const string& filename) {
 	cerr << "Saving Config to " << filename << '\n';
 	ofstream saveFile(filename);
@@ -33,11 +34,13 @@ void Config::load(const string& name) {
 			string val = line.substr(sep+1);
 			if (types.find(name) != types.end()) {
 			    Type t = types[name];
-				//Sym(t, val);
+				
+				f.insert(pair<string, Sym>(name, Sym(t, val)));			
+				// Sym s(t, val);
+				// f[name] = s;
 				//f[name] = s;
 				//f[name] = new Sym(t, val);
-				// Sym s(t, val);
-				// f[name](s);
+				//f[name] = Sym(t, const &val);
 				cout << t << ": " << val << '\n';
 			}
 		}

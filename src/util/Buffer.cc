@@ -10,43 +10,78 @@
 #include<iostream>
 #include<fstream>
 #include<string>
+#include<iostream>
 using namespace std;
 class Buffer {
 private:
-    long Size;
+    int Size;
     char * buffer;
-    long avail_size;
+    long Avail_size;
     char *p;
 public:
     Buffer() {
         buffer = new char[Size];
         buffer[0] = 0;
-        avail_size = 0;
+        Avail_size = Size;
           }
     ~Buffer() {
         delete[] buffer;
     }
-};
-class Uint1 {
-private:
-    uint8_t size;
-public:
-    Uint1( uint8_t size):size(size) {}
-};
-class Uint2 {
-private:
-    uint16_t size;
-public:
-    Uint2( uint16_t size):size(size) {}
-};
-class Uint3 {
-private:
-    uint32_t size;
-public:
-    Uint3( uint32_t size):size(size) {}
-};
+   
+    void write (char* buffer){
+            ofstream out("/Users/zhulin/Desktop/CSP/data.txt");
+            if(!out) {
+                return;
+            }
+            out.write(buffer,Size);
+            out.close();
+        
+    }
+    void flush (char* buffer) {
+        write(buffer);
+        p = buffer;
+        Avail_size = Size;
+    }
 
-
+    void writeUint1(uint8_t [], int n) {
+        p = buffer;
+        buffer = new char[Size+1];
+        for(int i = 0; i < n ;i++) {
+            *p = i;
+        }
+        Avail_size= Size - n * sizeof(uint8_t);
+        for(int i = 0; i < n;i++) {
+            buffer =uint8_t[i] ;
+            buffer++;
+        }
+        if(Avail_size < 0) {
+             flush(buffer);
+        }
+        else {
+             write(buffer);
+    }
+    void writeString(string s) {
+        Avail_size= size - s.length();
+        for(int i = 0; i < s.length()；i++) {
+            buffer = s.at(i);
+            buffer++;
+        }
+        for(int i = 0; i < s.length() ;i++) {
+            *p = i;
+        }
+            if(Avail_size < 0) {
+                flush(buffer);
+            }
+            else {
+                write(buffer);
+            }
+        }
+};
+int main() {
+    Buffer a = ;
+    cout<<"a: "<<a<<endl;
+    return 0;
+}
 
 
    /* void flush {
