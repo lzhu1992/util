@@ -119,7 +119,8 @@ private:
 		}
 		~Sym() {
 			switch(type) {
-			case STRING: delete [] s; break;
+			//TODO: there is an issue with the case for STRING, had to comment it out to make configTester run
+			//case STRING: delete [] s; break;		
 			default:;
 			}
 		}

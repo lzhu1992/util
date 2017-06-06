@@ -35,8 +35,9 @@ void Config::load(const string& name) {
 			if (types.find(name) != types.end()) {
 			    Type t = types[name];
 				
-				Sym s(t, val);
-				f[name] = s;
+				f.insert(pair<string, Sym>(name, Sym(t, val)));			
+				// Sym s(t, val);
+				// f[name] = s;
 				//f[name] = s;
 				//f[name] = new Sym(t, val);
 				//f[name] = Sym(t, const &val);
