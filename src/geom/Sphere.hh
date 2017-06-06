@@ -11,8 +11,8 @@
 #include <cmath>
 #include "Cube.hh"
 
-//#include "Constants.hh"
-const double PI= 3.14159265358979323846;
+#include "Constants.hh"
+
 
 namespace geom {
 class Sphere {
