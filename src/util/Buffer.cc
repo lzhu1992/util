@@ -7,43 +7,69 @@
 
 #include "Buffer.hh"
 #include <cstring>
-#include<iostream>
+#if 0
+include<iostream>
 #include<fstream>
 #include<string>
-#include<iostream>
-using namespace std;
+#endif
+using namespace std; 
 class Buffer {
 private:
-    int Size;
-    char * buffer;
-    long Avail_size;
-    char *p;
+  size_t size;
+  char * buffer;
+  size_t availSize;
+  char *p;
+  int fd;
+  void checkSize(size_t sz) {
+     if(availSize< sz) {
+        flush();
+     }
+  }
 public:
-    Buffer() {
-        buffer = new char[Size];
-        buffer[0] = 0;
-        Avail_size = Size;
-          }
-    ~Buffer() {
-        delete[] buffer;
-    }
-   
-    void write (char* buffer){
-            ofstream out("/Users/zhulin/Desktop/CSP/data.txt");
-            if(!out) {
-                return;
-            }
-            out.write(buffer,Size);
-            out.close();
-        
-    }
-    void flush (char* buffer) {
-        write(buffer);
-        p = buffer;
-        Avail_size = Size;
-    }
+  Buffer(const char filename[], size_t initialSize) : size(initialSize) {
+    buffer = new char[size];
+    availSize = size;
+    p = buffer;
+    fd = creat(filename, O_WRONLY);
+    if (fd < 0)
+        throw "File cannot open";
+  }  
+  Buffer(const Buffer & c) = delete; 
+  void operator =(const Buffer& orig) = delete;
+  void flush () {
+    write(fd, buffer,p-buffer);
+      p = buffer;
+      availSize = size;
+  }
+  void write(uint32_t v) {
+     *(uint32_t*)p = v;
+     p += sizeof(uint32_t);
+     availSize -= sizeof(v);
+  } 
 
-    void writeUint1(uint8_t [], int n) {
+  Buffer& operator <<(uint32_t v) {
+    checkSize(sizeof(v));
+    write(v);
+    return *this;    
+  }
+
+  void write(uint32_t[] v, size_t n) {
+    for (size_t i = 0; i < n; i++) {
+        *(uint32_t*)p = v[i];
+        p += sizeof(v);
+    }
+    availSize -= n * sizeof(v);
+  } 
+  void checkWrite(uint32_t[] v, size_t n) {
+  }
+
+  uint32_t readUint32() {
+
+  }
+
+  Buffer& append(string& s, DataType t) {}
+
+  void writeUint1array(uint8_t x[], int n) {
         p = buffer;
         buffer = new char[Size+1];
         for(int i = 0; i < n ;i++) {
@@ -60,9 +86,9 @@ public:
         else {
              write(buffer);
     }
-    void writeString(string s) {
-        Avail_size= size - s.length();
-        for(int i = 0; i < s.length()；i++) {
+  void writeString(string s) {
+    availSize= size - s.length();
+    for(int i = 0; i < s.length()；i++) {
             buffer = s.at(i);
             buffer++;
         }
@@ -77,7 +103,7 @@ public:
             }
         }
 };
-int main() {
+  int main() {
     Buffer a = ;
     cout<<"a: "<<a<<endl;
     return 0;
