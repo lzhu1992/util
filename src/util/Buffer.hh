@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <cstring>
 
 class Buffer {
 private:
@@ -13,10 +14,16 @@ private:
         flush();
      }
   }
-	void advance(size_t ds) {
+  void checkAvailableRead(size_t sz) {
+      if (sz > size) {
+          readNext();
+      }
+  }
+  void advance(size_t ds) {
 		p += ds;
 		availSize -= ds;
 	}	
+
 public:
   Buffer(const char filename[], size_t initialSize);
   Buffer(const Buffer & c) = delete; 
@@ -26,6 +33,11 @@ public:
       p = buffer;
       availSize = size;
   }
+  void readNext() {
+      int bytesRead = read(fd, buffer, size);
+  }
+
+
   void write(uint32_t v) {
 		*(uint32_t*)p = v;
 		advance(sizeof(uint32_t));
@@ -148,4 +160,4 @@ void Buffer::append(double v[],int number,const std::string& sep){
 	for (int i = 0;i < number-1;i++){
 		length += sprintf(data+length,"%lf%s",v[i],sep.c_str());		
 	}
-}
+} 
