@@ -1,9 +1,14 @@
+/**
+	 A binary high-speed buffer to support writing objects portably to a
+	 binary stream so it can be read back in (persistence)
+
+ */
 #pragma once
 #include <cstdint>
 #include <cstring>
-#include <string>
-
-
+#include<iostream>
+#include<fstream>
+using namespace std;
 class Buffer {
 private:
   size_t size;
@@ -26,7 +31,6 @@ private:
 		availSize -= ds;
 	}	
 
-
 public:
   Buffer(const char filename[], size_t initialSize);
   Buffer(const Buffer & c) = delete; 
@@ -40,183 +44,79 @@ public:
       int bytesRead = read(fd, buffer, size);
   }
 
-
-  void write(uint32_t v) {
-		*(uint32_t*)p = v;
-		advance(sizeof(uint32_t));
+//*********************************//
+//************ uint8_t *************//
+//************ uint16_t *************//
+//************ uint32_t *************//
+//************ uint64_t *************//
+  void write(uint8_t v) {
+     *(uint8_t*)p = v;
+     advance(sizeof(uint8_t));
   } 
-
+  void write(uint16_t v) {
+     *(uint16_t*)p = v;
+     advance(sizeof(uint16_t));
+  } 
+  void write(uint32_t v) {
+     *(uint32_t*)p = v;
+     advance(sizeof(uint32_t));
+  } 
+//*********************************//
+//************ uint8_t array *************//
+//************ uint16_t array *************//
+//************ uint32_t array *************//
+//************ uint64_t array *************//
+void checkWrite1(uint8_t[] v, size_t n) {
+    if(availSize< n*sizeof(v)) {
+        flush();
+     }
+  }
+  void checkWrite2(uint16_t[] v, size_t n) {
+    if(availSize< n*sizeof(v)) {
+        flush();
+     }
+  }
+  void checkWrite3(uint32_t[] v, size_t n) {
+    if(availSize< n*sizeof(v)) {
+        flush();
+     }
+  }
+  void checkWrite4(uint64_t[] v, size_t n) {
+    if(availSize< n*sizeof(v)) {
+        flush();
+     }
+  }
+  //*********************************//
+//************ uint8_t vector *************//
+//************ uint16_t vector *************//
+//************ uint32_t vector *************//
+//************ uint64_t vector *************//
+  void checkWriteMax1(const vector<uint8_t>& v) {
+    if(availSize< v.size()*sizeof(v)) {
+        flush();
+  }
+  void checkWriteMax2 (const vector<uint16_t>& v) {
+    if(availSize< v.size()*sizeof(v)) {
+        flush();
+  }
+  void checkWriteMax3 (const vector<uint32_t>& v) {
+    if(availSize< v.size()*sizeof(v)) {
+        flush();
+  }
+  void checkWriteMax4 (const vector<uint64_t>& v) {
+    if(availSize< v.size()*sizeof(v)) {
+        flush();
+  }
   Buffer& operator <<(uint32_t v) {
     checkSize(sizeof(v));
     write(v);
     return *this;    
   }
 
-  void write(uint32_t[] v, size_t n) {
-    for (size_t i = 0; i < n; i++) {
-        *(uint32_t*)p = v[i];
-        p += sizeof(v);
-    }
-    availSize -= n * sizeof(v);
-  } 
-  void checkWrite(uint32_t[] v, size_t n) {
-  }
-
-  uint32_t readUint32() {
-
-  }
-// readUnit8,readUnit16,readUnit32,readUnit64
-    uint8_t readUint8() {
-        uint8_t temp = *(uint8_t*)p;
-        p += sizeof(uint8_t);
-        availSize -= sizeof(uint8_t);
-        return temp;
-  }
-
-    uint16_t readUint16() {
-        uint16_t temp = *(uint16_t*)p;
-        p += sizeof(uint16_t);
-        availSize -= sizeof(uint16_t);
-        return temp;
-  }
-
-    uint32_t readUint32() {
-        uint32_t temp = *(uint32_t*)p;
-        p += sizeof(uint32_t);
-        availSize -= sizeof(uint32_t);
-        return temp;
-  }
-
-    uint64_t readUint64() {
-    uint64_t temp = *(uint64_t*)p;
-    p += sizeof(uint64_t);
-    availSize -= sizeof(uint64_t);
-    return temp;
-  }
-
-  //readUint8Check,readUint16Check,readUint32Check,readUint64Check
-    uint8_t readUint8Check() {
-        checkAvailableRead(sizeof(uint8_t));
-        readUint8();
-  }
-
-    uint16_t readUint16Check() {
-        checkAvailableRead(sizeof(uint16_t));
-        readUint16();
-  }
-    uint32_t readUint32Check() {
-    checkAvailableRead(sizeof(uint32_t));
-    readUint32();
-  }
-    uint64_t readUint64Check() {
-    checkAvailableRead(sizeof(uint64_t));
-    readUint64();
-  }
-
-  //readstring
-    string readstring1() {
-        uint8_t stringlength = *(uint8_t*)p;
-        p += sizeof(uint8_t);
-        availSize -= sizeof(uint8_t);
-
-    }
-
+ 
 
   Buffer& append(string& s, DataType t) {}
 
-  void writeUint1array(uint8_t x[], int n) {
-        p = buffer;
-        buffer = new char[Size+1];
-        for(int i = 0; i < n ;i++) {
-            *p = i;
-        }
-        Avail_size= Size - n * sizeof(uint8_t);
-        for(int i = 0; i < n;i++) {
-            buffer =uint8_t[i] ;
-            buffer++;
-        }
-        if(Avail_size < 0) {
-             flush(buffer);
-        }
-        else {
-             write(buffer);
-    }
-  void writeString(string s) {
-    availSize= size - s.length();
-    for(int i = 0; i < s.length(); i++) {
-            buffer = s.at(i);
-            buffer++;
-        }
-        for(int i = 0; i < s.length() ;i++) {
-            *p = i;
-        }
-            if(Avail_size < 0) {
-                flush(buffer);
-            }
-            else {
-                write(buffer);
-            }
-        }
-};
-  int main() {
-    Buffer a = ;
-    cout<<"a: "<<a<<endl;
-    return 0;
-}
-
-
-   /* void flush {
-	    write();
-	    p = buf;
-	    available = size;
-    } 
-    void write () {
-    }
-    void writemeta() {
-    }*/
-	    
   
-    //Buffer(int initialSize, const char * initialSize) {
-        
-    }//
 };
-Buffer::Buffer(int initialSize) {
-	data = new char[initialSize];
-	data[0] = 0;
-	size = initialSize;
-	length = 0;
-}
-
-Buffer::Buffer(int initialSize, const char * initialValue) {
-	data = new char[initialSize];
-	size = initialSize;
-	length = 0;
-	do {
-		data[length] = initialValue[length];
-	} while (initialValue[length++] != 0);
-}
-
-#if  0
-/*
- * Create Buffer initialized with http headers with embedded mime type
- */
-char* Buffer::Buffer(size_t initialsize, const char* header, size_t size,
-										 const string& mimeType) {
-	data = new char[initialSize];
-	size = initialSize;	
-  char* buf = data;
-	memcpy(buf, header, size);
-	buf += size;
-	memcpy(buf, mimeType.c_str(), mimeType.length());
-	buf += mimeType.length();
-	memcpy(buf, "\r\n\r\n", 4);
-  length = buf - data;
-}
-#endif
-
-void Buffer::append(double v[],int number,const std::string& sep){
-	checkSpace(number*(20+sep.length()));
-	for (int i = 0;i < number-1;i++){
-		length += sprintf(data+length,"%lf%s",v[i],sep.c_str());		
-	}
-} 
+ 

@@ -5,13 +5,15 @@
  *      Author: Dov Kruger
  */
 
-#include "Buffer.hh"
+/*
+ * Buffer.cpp
+ *
+ *  Created on: March 22, 2015
+ *      Author: Dov Kruger
+ */
 #include <cstring>
-#if 0
-include<iostream>
-#include<fstream>
-#include<string>
-#endif
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
 using namespace std; 
 class Buffer {
 private:
@@ -26,7 +28,7 @@ private:
      }
   }
 public:
-  Buffer(const char filename[], size_t initialSize) : size(initialSize) {
+  Buffer::Buffer(const char filename[], size_t initialSize) : size(initialSize) {
     buffer = new char[size];
     availSize = size;
     p = buffer;
@@ -34,112 +36,125 @@ public:
     if (fd < 0)
         throw "File cannot open";
   }  
-  Buffer(const Buffer & c) = delete; 
-  void operator =(const Buffer& orig) = delete;
-  void flush () {
-    write(fd, buffer,p-buffer);
-      p = buffer;
-      availSize = size;
+//*********************************//
+//************ uint8_t array *************//
+//************ uint16_t array *************//
+//************ uint32_t array *************//
+//************ uint64_t array *************//
+  void write(uint8_t[] v, size_t n) {
+    checkWrite1(v,n);
+    for (size_t i = 0; i < n; i++) {
+        *(uint8_t*)p = v[i];
+        p += sizeof(v);
+    }
+    availSize -= n * sizeof(v);
+  } 
+    void write(uint16_t[] v, size_t n) {
+      checkWrite2(v,n);
+      for (size_t i = 0; i < n; i++) {
+        *(uint16_t*)p = v[i];
+        p += sizeof(v);
+      }
+      availSize -= n * sizeof(v);
   }
-  void write(uint32_t v) {
+    void write(uint32_t[] v, size_t n) {
+      checkWrite3(v,n);
+      for (size_t i = 0; i < n; i++) {
+        *(uint32_t*)p = v[i];
+        p += sizeof(v);
+      }
+      availSize -= n * sizeof(v);
+  }
+    void write(uint64_t[] v, size_t n) {
+      checkWrite4(v,n);
+      for (size_t i = 0; i < n; i++) {
+        *(uint64_t*)p = v[i];
+        p += sizeof(v);
+     }
+     availSize -= n * sizeof(v);
+  }
+  
+//*********************************//
+//************ uint8_t vector *************//
+//************ uint16_t vector *************//
+//************ uint32_t vector *************//
+//************ uint64_t vector *************//
+ void write(const vector<uint8_t> & v) {
+    checkWriteMax1(v);
+     *(uint8_t*)p = v;
+     p += sizeof(uint8_t);
+     availSize -= sizeof(v);
+  } 
+ void write(const vector<uint16_t> & v) {
+    checkWriteMax2(v);
+     *(uint16_t*)p = v;
+     p += sizeof(uint16_t);
+     availSize -= sizeof(v);
+  } 
+ void write(const vector<uint32_t> & v) {
+    checkWriteMax3(v);
      *(uint32_t*)p = v;
      p += sizeof(uint32_t);
      availSize -= sizeof(v);
   } 
 
+  void write(const vector<uint64_t> & v) {
+     checkWriteMax4(v);
+     for (size_t i = 0; i < v.size(); i++) {
+        *(uint64_t*)p = v[i];
+        p += sizeof(v);
+      }
+      availSize -= v.size() * sizeof(v);
+  } 
+//*********************************//
+//************ uint8_t operator *************//
+//************ uint16_t operator *************//
+//************ uint32_t operator *************//
+//************ uint64_t operator *************//
   Buffer& operator <<(uint32_t v) {
     checkSize(sizeof(v));
     write(v);
     return *this;    
   }
 
-  void write(uint32_t[] v, size_t n) {
-    for (size_t i = 0; i < n; i++) {
-        *(uint32_t*)p = v[i];
-        p += sizeof(v);
+  //*********************************//
+//************ list1 *************//
+//************ list2  *************//
+//************ list3 *************//
+//************ list4 *************//
+  void checkWriteMeta(uint32_t[] v, size_t n) {
+    Type tag = n < 256 ? LIST1 : (n < 65536 ? LIST2 : LIST4);
+    *p++ = tag;
+
+  }
+//*********************************//
+//************ string **************//`
+//*******************************//
+  void write(string s1) {// Do I need to check size
+    for(uint8_t i = 0; i < s.length();i++) {
+            *(uint8_t *)p = s[i]; 
+            p += sizeof(s);
     }
-    availSize -= n * sizeof(v);
+    availSize -= s.length() * sizeof(s);
+  }  
+    void write(string s2) {// Do I need to check size
+    for(uint16_t i = 0; i < s.length();i++) {
+            *(uint16_t *)p = s[i]; 
+            p += sizeof(s);
+    }
+    availSize -= s.length() * sizeof(s);
   } 
-  void checkWrite(uint32_t[] v, size_t n) {
-  }
-
-  uint32_t readUint32() {
-
-  }
-
-  Buffer& append(string& s, DataType t) {}
-
-  void writeUint1array(uint8_t x[], int n) {
-        p = buffer;
-        buffer = new char[Size+1];
-        for(int i = 0; i < n ;i++) {
-            *p = i;
-        }
-        Avail_size= Size - n * sizeof(uint8_t);
-        for(int i = 0; i < n;i++) {
-            buffer =uint8_t[i] ;
-            buffer++;
-        }
-        if(Avail_size < 0) {
-             flush(buffer);
-        }
-        else {
-             write(buffer);
+   void write(string s4) {// Do I need to check size
+    for(uint32_t i = 0; i < s.length();i++) {
+            *(uint32_t *)p = s[i]; 
+            p += sizeof(s);
     }
-  void writeString(string s) {
-    availSize= size - s.length();
-    for(int i = 0; i < s.length()；i++) {
-            buffer = s.at(i);
-            buffer++;
-        }
-        for(int i = 0; i < s.length() ;i++) {
-            *p = i;
-        }
-            if(Avail_size < 0) {
-                flush(buffer);
-            }
-            else {
-                write(buffer);
-            }
-        }
-};
-  int main() {
-    Buffer a = ;
-    cout<<"a: "<<a<<endl;
-    return 0;
-}
-
-
-   /* void flush {
-	    write();
-	    p = buf;
-	    available = size;
-    } 
-    void write () {
-    }
-    void writemeta() {
-    }*/
-	    
-  
-    //Buffer(int initialSize, const char * initialSize) {
-        
-    }//
-};
-Buffer::Buffer(int initialSize) {
-	data = new char[initialSize];
-	data[0] = 0;
-	size = initialSize;
-	length = 0;
-}
-
-Buffer::Buffer(int initialSize, const char * initialValue) {
-	data = new char[initialSize];
-	size = initialSize;
-	length = 0;
-	do {
-		data[length] = initialValue[length];
-	} while (initialValue[length++] != 0);
-}
+    availSize -= s.length() * sizeof(s);
+  } 
+//*********************************//
+//************** append *******************//
+//*********************************//
+//*********************************//
 
 #if  0
 /*
@@ -165,7 +180,4 @@ void Buffer::append(double v[],int number,const std::string& sep){
 		length += sprintf(data+length,"%lf%s",v[i],sep.c_str());		
 	}
 }
-int main() {
-    cout<<endl;
-    return 0;
-}
+};
