@@ -82,20 +82,27 @@ public:
  void write(const vector<uint8_t> & v) {
     checkWriteMax1(v);
      *(uint8_t*)p = v;
-     p += sizeof(uint8_t);
-     availSize -= sizeof(v);
+     for (size_t i = 0; i < v.size(); i++) {
+        *(uint8_t*)p = v[i];
+        p += sizeof(v);
+      }
+    availSize -= v.size() * sizeof(v);
   } 
  void write(const vector<uint16_t> & v) {
     checkWriteMax2(v);
-     *(uint16_t*)p = v;
-     p += sizeof(uint16_t);
-     availSize -= sizeof(v);
+    for (size_t i = 0; i < v.size(); i++) {
+        *(uint16_t*)p = v[i];
+        p += sizeof(v);
+      }
+    availSize -= v.size() * sizeof(v);
   } 
  void write(const vector<uint32_t> & v) {
     checkWriteMax3(v);
-     *(uint32_t*)p = v;
-     p += sizeof(uint32_t);
-     availSize -= sizeof(v);
+    for (size_t i = 0; i < v.size(); i++) {
+        *(uint32_t*)p = v[i];
+        p += sizeof(v);
+      }
+     availSize -= v.size() * sizeof(v);
   } 
 
   void write(const vector<uint64_t> & v) {
@@ -104,7 +111,7 @@ public:
         *(uint64_t*)p = v[i];
         p += sizeof(v);
       }
-      availSize -= v.size() * sizeof(v);
+     availSize -= v.size() * sizeof(v);
   } 
 //*********************************//
 //************ uint8_t operator *************//
