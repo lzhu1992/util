@@ -1,9 +1,9 @@
 #pragma once
 #include <cstdint>
 #include <cstring>
-#include<iostream>
-#include<fstream>
-using namespace std;
+#include <string>
+
+
 class Buffer {
 private:
   size_t size;
@@ -25,6 +25,7 @@ private:
 		p += ds;
 		availSize -= ds;
 	}	
+
 
 public:
   Buffer(const char filename[], size_t initialSize);
@@ -64,6 +65,62 @@ public:
   uint32_t readUint32() {
 
   }
+// readUnit8,readUnit16,readUnit32,readUnit64
+    uint8_t readUint8() {
+        uint8_t temp = *(uint8_t*)p;
+        p += sizeof(uint8_t);
+        availSize -= sizeof(uint8_t);
+        return temp;
+  }
+
+    uint16_t readUint16() {
+        uint16_t temp = *(uint16_t*)p;
+        p += sizeof(uint16_t);
+        availSize -= sizeof(uint16_t);
+        return temp;
+  }
+
+    uint32_t readUint32() {
+        uint32_t temp = *(uint32_t*)p;
+        p += sizeof(uint32_t);
+        availSize -= sizeof(uint32_t);
+        return temp;
+  }
+
+    uint64_t readUint64() {
+    uint64_t temp = *(uint64_t*)p;
+    p += sizeof(uint64_t);
+    availSize -= sizeof(uint64_t);
+    return temp;
+  }
+
+  //readUint8Check,readUint16Check,readUint32Check,readUint64Check
+    uint8_t readUint8Check() {
+        checkAvailableRead(sizeof(uint8_t));
+        readUint8();
+  }
+
+    uint16_t readUint16Check() {
+        checkAvailableRead(sizeof(uint16_t));
+        readUint16();
+  }
+    uint32_t readUint32Check() {
+    checkAvailableRead(sizeof(uint32_t));
+    readUint32();
+  }
+    uint64_t readUint64Check() {
+    checkAvailableRead(sizeof(uint64_t));
+    readUint64();
+  }
+
+  //readstring
+    string readstring1() {
+        uint8_t stringlength = *(uint8_t*)p;
+        p += sizeof(uint8_t);
+        availSize -= sizeof(uint8_t);
+
+    }
+
 
   Buffer& append(string& s, DataType t) {}
 
