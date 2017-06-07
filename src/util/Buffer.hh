@@ -1,7 +1,9 @@
 #pragma once
 #include <cstdint>
 #include <cstring>
-
+#include<iostream>
+#include<fstream>
+using namespace std;
 class Buffer {
 private:
   size_t size;
