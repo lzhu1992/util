@@ -1,8 +1,9 @@
 #pragma once
 #include <cstdint>
 #include <cstring>
-#include<iostream>
-#include<fstream>
+#include <iostream>
+#include <fstream>
+#include <vector>
 using namespace std;
 class Buffer {
 private:
@@ -61,23 +62,10 @@ public:
 //************ uint16_t array *************//
 //************ uint32_t array *************//
 //************ uint64_t array *************//
-void checkWrite1(uint8_t[] v, size_t n) {
-    if(availSize< n*sizeof(v)) {
-        flush();
-     }
-  }
-  void checkWrite2(uint16_t[] v, size_t n) {
-    if(availSize< n*sizeof(v)) {
-        flush();
-     }
-  }
-  void checkWrite3(uint32_t[] v, size_t n) {
-    if(availSize< n*sizeof(v)) {
-        flush();
-     }
-  }
-  void checkWrite4(uint64_t[] v, size_t n) {
-    if(availSize< n*sizeof(v)) {
+template<typename T> 
+void checArraySpace(T v[], size_t n) {
+  //TODO: efficiency, and for big arrays if (n > ???)
+    if(availSize< n*sizeof(T)) {
         flush();
      }
   }

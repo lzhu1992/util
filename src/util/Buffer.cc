@@ -39,38 +39,15 @@ public:
 //************ uint16_t array *************//
 //************ uint32_t array *************//
 //************ uint64_t array *************//
-  void write(uint8_t[] v, size_t n) {
+  template<typename T>
+  void write(T v[], size_t n) {
     checkWrite1(v,n);
     for (size_t i = 0; i < n; i++) {
-        *(uint8_t*)p = v[i];
+        *(T*)p = v[i];
         p += sizeof(v);
     }
     availSize -= n * sizeof(v);
   } 
-    void write(uint16_t[] v, size_t n) {
-      checkWrite2(v,n);
-      for (size_t i = 0; i < n; i++) {
-        *(uint16_t*)p = v[i];
-        p += sizeof(v);
-      }
-      availSize -= n * sizeof(v);
-  }
-    void write(uint32_t[] v, size_t n) {
-      checkWrite3(v,n);
-      for (size_t i = 0; i < n; i++) {
-        *(uint32_t*)p = v[i];
-        p += sizeof(v);
-      }
-      availSize -= n * sizeof(v);
-  }
-    void write(uint64_t[] v, size_t n) {
-      checkWrite4(v,n);
-      for (size_t i = 0; i < n; i++) {
-        *(uint64_t*)p = v[i];
-        p += sizeof(v);
-     }
-     availSize -= n * sizeof(v);
-  }
   
 //*********************************//
 //************ uint8_t vector *************//
