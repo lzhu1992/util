@@ -12,8 +12,6 @@
  *      Author: Dov Kruger
  */
 #include <cstring>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
 using namespace std; 
 class Buffer {
 private:
