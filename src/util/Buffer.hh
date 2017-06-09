@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <cstddef>
 using namespace std;
 class Buffer {
 private:
@@ -12,7 +13,7 @@ private:
   size_t availSize;
   char *p;
   int fd;
-  void checkSize(size_t sz) {
+  void checkSpace(size_t sz) {
      if(availSize< sz) {
         flush();
      }
@@ -41,27 +42,23 @@ public:
   }
 
 //*********************************//
-//************ uint8_t *************//
-//************ uint16_t *************//
-//************ uint32_t *************//
-//************ uint64_t *************//
-  void write(uint8_t v) {
-     *(uint8_t*)p = v;
-     advance(sizeof(uint8_t));
-  } 
-  void write(uint16_t v) {
-     *(uint16_t*)p = v;
-     advance(sizeof(uint16_t));
-  } 
-  void write(uint32_t v) {
-     *(uint32_t*)p = v;
-     advance(sizeof(uint32_t));
-  } 
+//************ uint8_t uint16_t uint32_t uint64_t *************//
+template<typename T>
+  void write(T v) {
+     *(T*)p = v;
+     advance(sizeof(T));
+  }
+    //*********************************//
+//************ uint8_t uint16_t uint32_t uint64_t array *************//
 //*********************************//
-//************ uint8_t array *************//
-//************ uint16_t array *************//
-//************ uint32_t array *************//
-//************ uint64_t array *************//
+    void checkSpace(size_t sz) {
+        if(availSize< sz) {
+            flush();
+        }
+    }
+    //*********************************//
+//************ uint8_t uint16_t uint32_t uint64_t array *************//
+
 template<typename T> 
 void checArraySpace(T v[], size_t n) {
   //TODO: efficiency, and for big arrays if (n > ???)
@@ -70,33 +67,20 @@ void checArraySpace(T v[], size_t n) {
      }
   }
   //*********************************//
-//************ uint8_t vector *************//
-//************ uint16_t vector *************//
-//************ uint32_t vector *************//
-//************ uint64_t vector *************//
-  void checkWriteMax1(const vector<uint8_t>& v) {
-    if(availSize< v.size()*sizeof(v)) {
+//************ uint8_t uint16_t uint32_t uint64_t vector *************//
+  void checkVectorSpace(const vector<T>& v) {
+    if(availSize< v.size()*sizeof(T)) {
         flush();
   }
-  void checkWriteMax2 (const vector<uint16_t>& v) {
-    if(availSize< v.size()*sizeof(v)) {
-        flush();
-  }
-  void checkWriteMax3 (const vector<uint32_t>& v) {
-    if(availSize< v.size()*sizeof(v)) {
-        flush();
-  }
-  void checkWriteMax4 (const vector<uint64_t>& v) {
-    if(availSize< v.size()*sizeof(v)) {
-        flush();
-  }
-  Buffer& operator <<(uint32_t v) {
-    checkSize(sizeof(v));
-    write(v);
-    return *this;    
-  }
+      //*********************************//
+//************ uint8_t uint16_t uint32_t uint64_t operator *************//
+      Buffer& operator <<(T v) {
+          checkSpace(sizeof(T));
+          write(v);
+          return *this;
+      }
 
- // readUnit8,readUnit16,readUnit32,readUnit64
+      // readUnit8,readUnit16,readUnit32,readUnit64
     uint8_t readUint8() {
         uint8_t temp = *(uint8_t*)p;
         p += sizeof(uint8_t);
