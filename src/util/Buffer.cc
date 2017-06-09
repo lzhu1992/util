@@ -95,6 +95,53 @@ char* Buffer::Buffer(size_t initialsize, const char* header, size_t size,
 }
 #endif
 
+//read array
+ 
+vector<T> readarray() {
+    T length = *(*T)p;
+    p += sizeof(T);
+    vector<T>  *v;
+    for (size_t i = 0; i < length; i++) {
+        v[i] = *(T*)p = ;
+        p += sizeof(T);
+      }
+    return v;
+ }
+
+//read string
+string readstring1() {
+      unit_8 length = *(*unit_8)p;
+      p += sizeof(unit_8);
+      string s;
+      for (size_t i = 0 ; i < length; i++){
+        s[i] = *(uint8_t *)p;
+        p += sizeof(unit_8);
+      }
+      return s;
+}
+string readstring2() {
+      unit_16 length = *(*unit_16)p;
+      p += sizeof(unit_16);
+      string s;
+      for (size_t i = 0 ; i < length; i++){
+        s[i] = *(uint16_t *)p;
+        p += sizeof(unit_16);
+      }
+      return s;
+}
+string readstring3() {
+      unit_32 length = *(*unit_32)p;
+      p += sizeof(unit_32);
+      string s;
+      for (size_t i = 0 ; i < length; i++){
+        s[i] = *(uint32_t *)p;
+        p += sizeof(unit_32);
+      }
+      return s;
+}
+
+
+
 void Buffer::append(double v[],int number,const std::string& sep){
 	checkSpace(number*(20+sep.length()));
 	for (int i = 0;i < number-1;i++){
