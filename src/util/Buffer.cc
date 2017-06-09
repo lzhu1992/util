@@ -141,7 +141,6 @@ string readstring3() {
 }
 
 
-
 void Buffer::append(double v[],int number,const std::string& sep){
 	checkSpace(number*(20+sep.length()));
 	for (int i = 0;i < number-1;i++){
