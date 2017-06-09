@@ -20,11 +20,6 @@ private:
   size_t availSize;
   char *p;
   int fd;
-  void checkSize(size_t sz) {
-     if(availSize< sz) {
-        flush();
-     }
-  }
 public:
   Buffer::Buffer(const char filename[], size_t initialSize) : size(initialSize) {
     buffer = new char[size];
@@ -35,68 +30,26 @@ public:
         throw "File cannot open";
   }  
 //*********************************//
-//************ uint8_t array *************//
-//************ uint16_t array *************//
-//************ uint32_t array *************//
-//************ uint64_t array *************//
+//************ uint8_t uint16_t uint32_t uint64_t array *************//
   template<typename T>
   void write(T v[], size_t n) {
-    checkWrite1(v,n);
+        checArraySpace(v,n);
     for (size_t i = 0; i < n; i++) {
         *(T*)p = v[i];
-        p += sizeof(v);
+        p += sizeof(T);
     }
-    availSize -= n * sizeof(v);
-  } 
-  
-//*********************************//
-//************ uint8_t vector *************//
-//************ uint16_t vector *************//
-//************ uint32_t vector *************//
-//************ uint64_t vector *************//
- void write(const vector<uint8_t> & v) {
-    checkWriteMax1(v);
-     *(uint8_t*)p = v;
-     for (size_t i = 0; i < v.size(); i++) {
-        *(uint8_t*)p = v[i];
-        p += sizeof(v);
-      }
-    availSize -= v.size() * sizeof(v);
-  } 
- void write(const vector<uint16_t> & v) {
-    checkWriteMax2(v);
-    for (size_t i = 0; i < v.size(); i++) {
-        *(uint16_t*)p = v[i];
-        p += sizeof(v);
-      }
-    availSize -= v.size() * sizeof(v);
-  } 
- void write(const vector<uint32_t> & v) {
-    checkWriteMax3(v);
-    for (size_t i = 0; i < v.size(); i++) {
-        *(uint32_t*)p = v[i];
-        p += sizeof(v);
-      }
-     availSize -= v.size() * sizeof(v);
-  } 
+    availSize -= n * sizeof(T);
+  }
 
-  void write(const vector<uint64_t> & v) {
-     checkWriteMax4(v);
-     for (size_t i = 0; i < v.size(); i++) {
-        *(uint64_t*)p = v[i];
-        p += sizeof(v);
-      }
-     availSize -= v.size() * sizeof(v);
-  } 
 //*********************************//
-//************ uint8_t operator *************//
-//************ uint16_t operator *************//
-//************ uint32_t operator *************//
-//************ uint64_t operator *************//
-  Buffer& operator <<(uint32_t v) {
-    checkSize(sizeof(v));
-    write(v);
-    return *this;    
+//************ uint8_t uint16_t uint32_t uint64_t vector *************//
+    void write(const vector<T> & v) {
+    checkVectorSpace(v);
+     for (size_t i = 0; i < v.size(); i++) {
+        *(T*)p = v[i];
+        p += sizeof(T);
+      }
+    availSize -= v.size() * sizeof(T);
   }
 
   //*********************************//
@@ -112,27 +65,13 @@ public:
 //*********************************//
 //************ string **************//`
 //*******************************//
-  void write(string s1) {// Do I need to check size
+  void write(string s1) {
     for(uint8_t i = 0; i < s.length();i++) {
-            *(uint8_t *)p = s[i]; 
-            p += sizeof(s);
+            *(T *)p = s[i];
+            p += sizeof(T);
     }
-    availSize -= s.length() * sizeof(s);
-  }  
-    void write(string s2) {// Do I need to check size
-    for(uint16_t i = 0; i < s.length();i++) {
-            *(uint16_t *)p = s[i]; 
-            p += sizeof(s);
-    }
-    availSize -= s.length() * sizeof(s);
-  } 
-   void write(string s4) {// Do I need to check size
-    for(uint32_t i = 0; i < s.length();i++) {
-            *(uint32_t *)p = s[i]; 
-            p += sizeof(s);
-    }
-    availSize -= s.length() * sizeof(s);
-  } 
+    availSize -= s.length() * sizeof(T);
+  }
 //*********************************//
 //************** append *******************//
 //*********************************//
