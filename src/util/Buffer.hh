@@ -80,56 +80,20 @@ void checArraySpace(T v[], size_t n) {
           return *this;
       }
 
-      // readUnit8,readUnit16,readUnit32,readUnit64
-    uint8_t readUint8() {
-        uint8_t temp = *(uint8_t*)p;
-        p += sizeof(uint8_t);
-        availSize -= sizeof(uint8_t);
+// readUnit8,readUnit16,readUnit32,readUnit64
+    T readUint() {
+        T temp = *(T*)p;
+        p += sizeof(T);
+        availSize -= sizeof(T);
         return temp;
   }
 
-    uint16_t readUint16() {
-        uint16_t temp = *(uint16_t*)p;
-        p += sizeof(uint16_t);
-        availSize -= sizeof(uint16_t);
-        return temp;
-  }
-
-    uint32_t readUint32() {
-        uint32_t temp = *(uint32_t*)p;
-        p += sizeof(uint32_t);
-        availSize -= sizeof(uint32_t);
-        return temp;
-  }
-
-    uint64_t readUint64() {
-    uint64_t temp = *(uint64_t*)p;
-    p += sizeof(uint64_t);
-    availSize -= sizeof(uint64_t);
-    return temp;
-  }
 
 //read Uint8Check,readUint16Check,readUint32Check,readUint64Check
-    uint8_t readUint8Check() {
-        checkAvailableRead(sizeof(uint8_t));
-        readUint8();
+    T readUintCheck() {
+        checkAvailableRead(sizeof(T));
+        readUint();
   }
-
-    uint16_t readUint16Check() {
-        checkAvailableRead(sizeof(uint16_t));
-        readUint16();
-  }
-    uint32_t readUint32Check() {
-    checkAvailableRead(sizeof(uint32_t));
-    readUint32();
-  }
-    uint64_t readUint64Check() {
-    checkAvailableRead(sizeof(uint64_t));
-    readUint64();
-  }
-
-//read array
-
 
   Buffer& append(string& s, DataType t) {}
 
