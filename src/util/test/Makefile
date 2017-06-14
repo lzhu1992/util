@@ -1,7 +1,7 @@
 INC	:= -I ../..
 include	../../../Makefile.inc
 
-all: TestConfig TestBuffer
+all: TestConfig TestBuffer TestLog
 
 clean:
 	rm *.o
@@ -27,3 +27,7 @@ TestBuffer.o: TestBuffer.cc Buffer.o ../Buffer.hh
 Buffer.o: ../Buffer.cc ../Buffer.hh
 	$(CXX) $(CFLAGS) $<
 
+TestLog: Log.o
+
+Log.o:	../Log.cc
+	$(CXX) $(CFLAGS) $<	
