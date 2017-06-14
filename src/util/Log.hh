@@ -3,13 +3,16 @@
 
 #include <cstdint>
 #include <string>
+
 class Log {
 public:
 	enum Level { INFO, DEBUG, WARN, ERROR, CRITICAL };
 private:
 	Level lev;
+	int fh;
 public:
 	Log();
+	~Log();
 	void setLogFile(const char filename[]);
 	void setLevel(Level L) {
 		lev = L;
@@ -19,14 +22,14 @@ public:
 	void log(Level severity, uint16_t message, uint32_t param1, uint32_t param2) {}
 	// write a variable-length string into the log, pad to 32-bit length
 	void log(Level severity, uint16_t message, const std::string& name) {}
-	void warn(uint16_t message) {
-		log(Level::WARN, message);
+	void warn(Errcode message) {
+		log(Level::WARN, (uint16_t)message);
 	}
-	void error(uint16_t message) {
-		log(Level::ERROR, message);
+	void error(Errcode message) {
+		log(Level::ERROR, (uint16_t)message);
 	}
-	void critical(uint16_t message) {
-		log(Level::CRITICAL, message);
+	void critical(Errcode message) {
+		log(Level::CRITICAL, (uint16_t)message);
 	}
 };
 

@@ -1,7 +1,7 @@
-#ifndef EX_HH_
-#define EX_HH_
+#pragma once
 
 #include <cstdint>
+#include <iostream>
 #include "util/Log.hh"
 /*
 	Represent an exception class that outputs a numeric error code into
@@ -17,6 +17,9 @@ public:
 public:
 	Ex(const char filename[], uint32_t lineNum, Errcode e) :
 		filename(filename), lineNum(lineNum), e(e) {}
+	friend std::ostream& operator <<(std::ostream& s, const Ex& e) {
+		return s << e.filename << ": " << e.lineNum << " Errcode=" << int(e.e) << '\n';
+	}
 };
 
 class FatalEx : public Ex {
@@ -25,6 +28,3 @@ public:
 	FatalEx(const char filename[], int lineNum, Errcode e) :
 		Ex(filename, lineNum, e) {}
 };
-
-#endif
-

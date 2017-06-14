@@ -21,7 +21,7 @@ TestBufferObj	:= TestBuffer.o Buffer.o
 TestBuffer: $(TestBufferObj)
 	$(CXX) $(LDFLAGS) $(TestBufferObj) -o TestBuffer
 
-TestBuffer.o: TestBuffer.cc ../Buffer.hh
+TestBuffer.o: TestBuffer.cc Buffer.o ../Buffer.hh
 	$(CXX) $(CFLAGS) $<
 
 Buffer.o: ../Buffer.cc ../Buffer.hh

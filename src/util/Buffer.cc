@@ -21,7 +21,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "Buffer.hh"
-#include "Datatype.h"
+#include "util/datatype.hh"
 using namespace std;
 
 Buffer::Buffer(const char filename[], size_t initialSize) : size(initialSize) {
@@ -31,14 +31,22 @@ Buffer::Buffer(const char filename[], size_t initialSize) : size(initialSize) {
     fd = creat(filename, O_WRONLY);
     if (fd < 0)
         throw "File cannot write";
+		writing = true;
 }
-Buffer::Buffer(const char filename[], size_t initialSize, char*)  : size(initialSize)  {
+Buffer::Buffer(const char filename[], size_t initialSize, const char*)  : size(initialSize)  {
     buffer = new char[size];
-    availSize = size;
     p = buffer;
     fd = open(filename, O_RDONLY);
     if (fd < 0)
         throw "File cannot open";
+		readNext();
+		writing = false;
+}
+
+Buffer::~Buffer() {
+	if (writing)
+		flush();
+	int status = close(fd);
 }
 
 void Buffer::readNext() {

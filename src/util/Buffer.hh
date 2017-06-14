@@ -15,26 +15,28 @@
 using namespace std;
 class Buffer {
 private:
-    size_t size;
-    char * buffer;
-    size_t availSize;
-    char *p;
-    int fd;
-    void checkAvailableRead(size_t sz) {
-        if (sz > size) {
-            readNext();
-        }
-    }
+	bool writing;
+	size_t size;
+	char * buffer;     // pointer to the buffer
+	size_t availSize;  // how much space is left in the buffer
+	char *p;           // cursor to current byte for reading/writing
+	int fd;            // file descriptor for file backing this buffer (read or write)
+	void checkAvailableRead(size_t sz) {
+		if (sz > size) {
+			readNext();
+		}
+	}
 
-    void advance(size_t ds) {
-        p += ds;
-        availSize -= ds;
-    }
+	void advance(size_t ds) {
+		p += ds;
+		availSize -= ds;
+	}
     
 public:
-    Buffer(const char filename[], size_t initialSize);
-    Buffer(const char filename[], size_t initialSize, char*);
-    Buffer(const Buffer & c) = delete;
+	Buffer(const char filename[], size_t initialSize);
+	Buffer(const char filename[], size_t initialSize, const char*);
+	Buffer(const Buffer & c) = delete;
+	~Buffer();
     void operator =(const Buffer& orig) = delete;
     void flush ();
     void readNext();

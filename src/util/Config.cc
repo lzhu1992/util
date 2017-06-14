@@ -24,6 +24,7 @@ void Config::load(const string& name) {
 		reader.open(name, ios::in);
 		while(!reader.eof()){
 			getline(reader, line);
+			cerr << "LINE: " << line << '\n';
 			//removing the comments and blank lines
 			line = regex_replace(line, commentOrWhitespace, "");
 			//If the line is empty, continue
