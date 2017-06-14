@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <string>
+#include <unistd.h>
+#include <fcntl.h>
 
 class Log {
 public:
@@ -11,9 +13,19 @@ private:
 	Level lev;
 	int fh;
 public:
-	Log();
-	~Log();
-	void setLogFile(const char filename[]);
+	Log() {}
+	~Log() {
+		if (fh >= 0)
+			close(fh);
+	}
+
+
+	void setLogFile(const char filename[]) {
+		fh = creat(filename, 0644);
+		if (fh < 0)
+			throw "IOEXception"; // TODO: Put in real exception object!
+	}
+
 	void setLevel(Level L) {
 		lev = L;
 	}

@@ -20,10 +20,9 @@ void Config::load(const string& name) {
 	//Function to read the config file and update it to the hashmap for the configuration
 	string line, key, val;
 	int flag;
-	ifstream reader;
-		reader.open(name, ios::in);
-		while(!reader.eof()){
-			getline(reader, line);
+	ifstream reader(name, ios::in);
+
+	while(getline(reader, line), !reader.eof()){
 			cerr << "LINE: " << line << '\n';
 			//removing the comments and blank lines
 			line = regex_replace(line, commentOrWhitespace, "");
