@@ -31,3 +31,14 @@ TestLog: Log.o
 
 Log.o:	../Log.cc
 	$(CXX) $(CFLAGS) $<	
+
+TestBenchmarkObj	:=	TestBenchmark.o Benchmark.o
+
+TestBenchmark: $(TestBenchmarkObj)
+	$(CXX) $(LDFLAGS) $(TestBenchmarkObj) -o TestBenchmark
+
+TestBenchmark.o: TestBenchmark.cc ../Benchmark.hh
+	$(CXX) $(CFLAGS) $<
+
+Benchmark.o: ../Benchmark.cc ../Benchmark.hh
+	$(CXX) $(CFLAGS) $<

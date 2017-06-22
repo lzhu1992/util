@@ -1,5 +1,5 @@
-#ifndef BENCHMARK_HH_
-#define BENCHMARK_HH_
+#pragma once
+#include <cstdint>
 
 class Benchmark {
 private:
@@ -11,5 +11,3 @@ public:
 	void end();
 	uint64_t elapsed() const;
 };
-
-#endif
