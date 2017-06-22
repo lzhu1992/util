@@ -14,8 +14,8 @@ int main() {
 	double sum = 0;
 	for (int i = 0; i < 100000000; i++)
 		sum += i;
-	a.stop();
-	cout << a << '\n';
+	a.end();
+	std::cout << a << '\n';
 
 	Benchmark::benchmark(f);
 }
