@@ -1,6 +1,3 @@
-//
-// Created by Xiaoxue Guo on 6/14/17.
-//
 
 /*
  * Buffer.cpp
@@ -21,17 +18,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "Buffer.hh"
-#include "util/datatype.hh"
 using namespace std;
 
 Buffer::Buffer(const char filename[], size_t initialSize) : size(initialSize) {
     buffer = new char[size];
     availSize = size;
     p = buffer;
-    fd = creat(filename, O_WRONLY);
+    fd = creat(filename, 0664);
     if (fd < 0)
         throw "File cannot write";
-		writing = true;
+    writing = true;
 }
 Buffer::Buffer(const char filename[], size_t initialSize, const char*)  : size(initialSize)  {
     buffer = new char[size];
@@ -39,14 +35,14 @@ Buffer::Buffer(const char filename[], size_t initialSize, const char*)  : size(i
     fd = open(filename, O_RDONLY);
     if (fd < 0)
         throw "File cannot open";
-		readNext();
-		writing = false;
+    readNext();
+    writing = false;
 }
 
 Buffer::~Buffer() {
-	if (writing)
-		flush();
-	int status = close(fd);
+    if (writing)
+        flush();
+    int status = close(fd);
 }
 
 void Buffer::readNext() {
@@ -62,7 +58,7 @@ void Buffer:: flush () {
 //*********************************//
 //************ uint8_t uint16_t uint32_t uint64_t array *************//
 template<typename T>
-void Buffer::write(T v[], size_t n) {
+void Buffer::writearray(T v[], size_t n) {
     checArraySpace(v,n);
     for (size_t i = 0; i < n; i++) {
         *(T*)p = v[i];
@@ -89,15 +85,24 @@ void Buffer::write(const vector<T>& v) {
 //************ list2  *************//
 //************ list3 *************//
 //************ list4 *************//
+
 void checkWriteMeta(uint32_t[]v, size_t n) {
     DataType tag = n < 256 ? LIST1 : (n < 65536 ? LIST2 : LIST4);
     *p++ = tag;
 
 }
+#endif
 //*********************************//
 //************ string **************//`
 //*******************************//
-void Buffer::write(string s) {
+void Buffer::write(const string& s) {
+    if(s.length() < 256) {
+        *(uint8_t*)p++ = s.length();
+    }else if (s.length() < 65536){
+        *(uint16_t*)p++ = s.length();
+    } else {
+        *(uint32_t*)p++ = s.length();
+    }
     for(uint8_t i = 0; i < s.length();i++) {
         *p++ = s[i];
     }
@@ -107,7 +112,7 @@ void Buffer::write(string s) {
 //************** append *******************//
 //*********************************//
 //*********************************//
-#endif
+
 #if  0
 /*
  * Create Buffer initialized with http headers with embedded mime type
@@ -143,39 +148,42 @@ vector<T> readarray<T>() {
 }
 */
 //read string
+
+string Buffer::readstring1() {
+    uint8_t len = *(uint8_t *)p;
+    p += sizeof(uint8_t);
+    string s;
+    s.reserve(len);
+    for (size_t i = 0 ; i < len; i++){
+        s += *p;
+        p += sizeof(uint8_t);
+    }
+    return s;
+}
+string Buffer::readstring2() {
+    uint16_t len = *(uint16_t *)p;
+    p += sizeof(uint16_t);
+    string s;
+    s.reserve(len);
+    for (size_t i = 0 ; i < len; i++){
+        s += *p;
+        p += sizeof(uint16_t);
+    }
+    return s;
+}
+string Buffer::readstring4() {
+    uint32_t len = *(uint32_t *)p;
+    p += sizeof(uint32_t);
+    string s;
+    s.reserve(len);
+    for (size_t i = 0 ; i < len; i++){
+        s += *p;
+        p += sizeof(uint32_t);
+    }
+    return s;
+}
+
 /*
-string readstring1() {
-    unit_8 len = *(*unit_8)p;
-    p += sizeof(unit_8);
-    string s;
-    for (size_t i = 0 ; i < length; i++){
-        s[i] = *(uint8_t *)p;
-        p += sizeof(unit_8);
-    }
-    return s;
-}
-string readstring2() {
-    unit_16 length = *(*unit_16)p;
-    p += sizeof(unit_16);
-    string s;
-    for (size_t i = 0 ; i < length; i++){
-        s[i] = *(uint16_t *)p;
-        p += sizeof(unit_16);
-    }
-    return s;
-}
-string readstring3() {
-    unit_32 length = *(*unit_32)p;
-    p += sizeof(unit_32);
-    string s;
-    for (size_t i = 0 ; i < length; i++){
-        s[i] = *(uint32_t *)p;
-        p += sizeof(unit_32);
-    }
-    return s;
-}
-
-
 void Buffer::append(double v[],int number,const std::string& sep){
     checkSpace(number*(20+sep.length()));
     for (int i = 0;i < number-1;i++){
@@ -184,3 +192,5 @@ void Buffer::append(double v[],int number,const std::string& sep){
 }
 };
  */
+appenduint8(char *s)
+sprintf(s,"%d",)

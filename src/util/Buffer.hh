@@ -1,7 +1,3 @@
-//
-// Created by Xiaoxue Guo on 6/14/17.
-//
-
 
 #pragma once
 
@@ -40,6 +36,10 @@ public:
     void operator =(const Buffer& orig) = delete;
     void flush ();
     void readNext();
+    void write(const string& s);
+    string readstring1();
+    string readstring2();
+    string readstring4();
 
 //*********************************//
 //************ uint8_t uint16_t uint32_t uint64_t *************//
@@ -127,5 +127,4 @@ public:
         return readUint64();
     }
 };
-
 
