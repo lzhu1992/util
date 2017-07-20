@@ -51,8 +51,9 @@ public:
 class LogReader {
 public:
 	LogReader(const char filename[], const char language[]);
-	bool hasNext(Log::Level severity) {}
-	bool hasNext(uint16_t message) {}
+	//TODO: Fix these next two functions
+	bool hasNext(Log::Level severity) { return false; }
+	bool hasNext(uint16_t message) { return false; }
 
 	//print the current message
 	void print(std::ostream& s);

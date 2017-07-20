@@ -32,6 +32,8 @@ public:
 	Buffer(const char filename[], size_t initialSize);
 	Buffer(const char filename[], size_t initialSize, const char*);
 	Buffer(const Buffer & c) = delete;
+	Buffer() {} // TODO: set socket later 
+	Buffer(const char*) : fd(-1) {} //TODO: use for input, merging with Lin
 	~Buffer();
     void operator =(const Buffer& orig) = delete;
     void flush ();

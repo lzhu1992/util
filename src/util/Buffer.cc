@@ -192,5 +192,5 @@ void Buffer::append(double v[],int number,const std::string& sep){
 }
 };
  */
-appenduint8(char *s)
-sprintf(s,"%d",)
+//appenduint8(char *s)
+//sprintf(s,"%d",)
