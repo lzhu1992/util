@@ -1,6 +1,13 @@
-#include "util/Benchmark.hh"
+#include "Benchmark.hh"
 #include <unistd.h>
+#include <sys/times.h>
+
 using namespace std;
+
+static struct tms startCPUTimes;
+static time_t startWallTime;
+static struct tms endCPUTimes;
+static time_t endWallTime;
 
 Benchmark::Benchmark() :
   elapsedUserTime(0), elapsedSystemTime(0), elapsedWallTime(0),
@@ -13,9 +20,7 @@ void Benchmark::start() {
   time(&startWallTime);
 }
 
-void Benchmark::stop() {
-  struct tms endCPUTimes;
-  time_t endWallTime;
+void Benchmark::end() {
   times(&endCPUTimes);
   time(&endWallTime);
   elapsedUserTime += endCPUTimes.tms_utime - startCPUTimes.tms_utime;
@@ -23,9 +28,12 @@ void Benchmark::stop() {
   elapsedWallTime += endWallTime - startWallTime;
 }
 
-void Benchmark:: benchmark(void (*Func)() ) {
-
-
+void Benchmark::benchmark(void (*Func)() ) {
+  Benchmark a;
+  a.start();
+  Func();
+  a.end();
+  std::cout << a << '\n';
 }
 
 
