@@ -6,38 +6,38 @@
 #include "Buffer.hh"
 using namespace std;
 
-Buffer2::Buffer2(const char filename[], size_t initialSize) : size(initialSize) {
+Buffer::Buffer(size_t initialSize, bool writing) : size(initialSize), writing(writing) {
     preBuffer = new char[size+extra*2];
     buffer = extra+preBuffer;
-    availSize = size;
     p = buffer;
+		fd = -1;		
+}
+
+Buffer::Buffer(const char filename[], size_t initialSize) : Buffer(initialSize, true) {
+	availSize = size;
     fd = creat(filename, 0664);
     if (fd < 0)
         throw "File cannot write";
-    writing = true;
 }
-Buffer2::Buffer2(const char filename[], size_t initialSize, const char*)  : size(initialSize)  {
-    preBuffer = new char[size+extra*2];
-    buffer = extra+preBuffer;
-    p = buffer;
+Buffer::Buffer(const char filename[], size_t initialSize, const char*)  : Buffer(initialSize, false) {
     fd = open(filename, O_RDONLY);
     if (fd < 0)
         throw "File cannot open";
-    readNext();
+		availSize = 0;
     writing = false;
 }
 
-Buffer2::~Buffer2() {
+Buffer::~Buffer() {
     if (writing)
         flush();
-    delete[]preBuffer;
+    delete[] preBuffer;
     int status = close(fd);
 }
 
-void Buffer2::readNext() {
+void Buffer::readNext() {
     availSize = ::read(fd, buffer, size);
 }
-void Buffer2:: flush () {//how to copy
+void Buffer:: flush () {//how to copy
     ::write(fd, buffer,size);
     size_t overSize = p - (buffer + size);
     memcpy(buffer,buffer+size, overSize);
@@ -47,7 +47,7 @@ void Buffer2:: flush () {//how to copy
 
 
 
-void Buffer2::write(const string& s) {
+void Buffer::write(const string& s) {
     if(s.length() < 256) {
         *(uint8_t*)p++ = s.length();
     }else if (s.length() < 65536){
@@ -62,7 +62,7 @@ void Buffer2::write(const string& s) {
 }
 
 
-string Buffer2::readstring1() {
+string Buffer::readstring1() {
     uint8_t len = *(uint8_t *)p;
     p += sizeof(uint8_t);
     string s;
@@ -73,7 +73,7 @@ string Buffer2::readstring1() {
     }
     return s;
 }
-string Buffer2::readstring2() {
+string Buffer::readstring2() {
     uint16_t len = *(uint16_t *)p;
     p += sizeof(uint16_t);
     string s;
@@ -84,7 +84,7 @@ string Buffer2::readstring2() {
     }
     return s;
 }
-string Buffer2::readstring4() {
+string Buffer::readstring4() {
     uint32_t len = *(uint32_t *)p;
     p += sizeof(uint32_t);
     string s;

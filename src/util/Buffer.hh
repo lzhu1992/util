@@ -8,7 +8,7 @@
 #include <cstddef>
 
 using namespace std;
-class Buffer2 {
+class Buffer {
 private:
     bool writing;
     size_t size;
@@ -20,18 +20,21 @@ private:
     int fd;            // file descriptor for file backing this buffer (read or write)
     void checkAvailableRead(size_t sz) {
         if (availSize < sz) {
-            size_t overflowSize = sz - availSize;
+            size_t overflowSize = availSize;
             memcpy(buffer - overflowSize, p, overflowSize);
             readNext();
+						availSize += overflowSize;
             p = buffer - overflowSize;
         }
     }
 public:
-    Buffer2(const char filename[], size_t initialSize);
-    Buffer2(const char filename[], size_t initialSize, const char*);
-    Buffer2(const Buffer2 & c) = delete;
-    ~Buffer2();
-    void operator =(const Buffer2& orig) = delete;
+	Buffer(size_t initialSize, bool writing);
+	Buffer(const char filename[], size_t initialSize);
+    Buffer(const char filename[], size_t initialSize, const char*);
+    Buffer(const Buffer & c) = delete;
+	void attach(int sockfd) { fd = sockfd; }
+    ~Buffer();
+    void operator =(const Buffer& orig) = delete;
     void flush ();
     void readNext();
     void write(const string& s);
@@ -75,7 +78,7 @@ public:
     //*********************************//
 //************ uint8_t uint16_t uint32_t uint64_t operator *************//
     template<typename T>
-    Buffer2& operator <<(T v) {// there is a write in flush function
+    Buffer& operator <<(T v) {// there is a write in flush function
         checkSpace(sizeof(T));
         write(v);
         return *this;
