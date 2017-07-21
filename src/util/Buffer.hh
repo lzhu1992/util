@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <cstdint>
@@ -9,33 +8,30 @@
 #include <cstddef>
 
 using namespace std;
-class Buffer {
+class Buffer2 {
 private:
-	bool writing;
-	size_t size;
-	char * buffer;     // pointer to the buffer
-	size_t availSize;  // how much space is left in the buffer
-	char *p;           // cursor to current byte for reading/writing
-	int fd;            // file descriptor for file backing this buffer (read or write)
-	void checkAvailableRead(size_t sz) {
-		if (sz > size) {
-			readNext();
-		}
-	}
-
-	void advance(size_t ds) {
-		p += ds;
-		availSize -= ds;
-	}
-    
+    bool writing;
+    size_t size;
+    const size_t extra = 128;
+    char *preBuffer;
+    char * buffer;     // pointer to the buffer
+    size_t availSize;  // how much space is left in the buffer
+    char *p;           // cursor to current byte for reading/writing
+    int fd;            // file descriptor for file backing this buffer (read or write)
+    void checkAvailableRead(size_t sz) {
+        if (availSize < sz) {
+            size_t overflowSize = sz - availSize;
+            memcpy(buffer - overflowSize, p, overflowSize);
+            readNext();
+            p = buffer - overflowSize;
+        }
+    }
 public:
-	Buffer(const char filename[], size_t initialSize);
-	Buffer(const char filename[], size_t initialSize, const char*);
-	Buffer(const Buffer & c) = delete;
-	Buffer() {} // TODO: set socket later 
-	Buffer(const char*) : fd(-1) {} //TODO: use for input, merging with Lin
-	~Buffer();
-    void operator =(const Buffer& orig) = delete;
+    Buffer2(const char filename[], size_t initialSize);
+    Buffer2(const char filename[], size_t initialSize, const char*);
+    Buffer2(const Buffer2 & c) = delete;
+    ~Buffer2();
+    void operator =(const Buffer2& orig) = delete;
     void flush ();
     void readNext();
     void write(const string& s);
@@ -48,13 +44,13 @@ public:
     template<typename T>
     void write(T v) {
         *(T*)p = v;
-        advance(sizeof(T));
+        checkSpace(sizeof(T));
     }
     //*********************************//
 //************ uint8_t uint16_t uint32_t uint64_t array *************//
 //*********************************//
     void checkSpace(size_t sz) {
-        if(availSize< sz) {
+        if(p > buffer+size) {
             flush();
         }
     }
@@ -79,7 +75,7 @@ public:
     //*********************************//
 //************ uint8_t uint16_t uint32_t uint64_t operator *************//
     template<typename T>
-    Buffer& operator <<(T v) {
+    Buffer2& operator <<(T v) {// there is a write in flush function
         checkSpace(sizeof(T));
         write(v);
         return *this;
@@ -109,7 +105,7 @@ public:
         p += sizeof(uint64_t);
         availSize -= sizeof(uint64_t);
         return temp;
-    }
+}
 
 //read Uint8Check,readUint16Check,readUint32Check,readUint64Check
     uint8_t readUint8Check() {
@@ -129,4 +125,17 @@ public:
         return readUint64();
     }
 };
-
+// StringBuffer
+class StringBuffer{
+private:
+    char *s;
+    char * cursor;
+    size_t size;
+    size_t availSz;
+public:
+    StringBuffer(size_t initialSize);
+    StringBuffer(const StringBuffer & c) = delete;
+    ~StringBuffer();
+    void flush();
+    void appendUInt8(uint8_t);
+};

@@ -1,17 +1,3 @@
-
-/*
- * Buffer.cpp
- *
- *  Created on: March 22, 2015
- *      Author: Dov Kruger
- */
-
-/*
- * Buffer.cpp
- *
- *  Created on: March 22, 2015
- *      Author: Dov Kruger
- */
 #include <cstring>
 #include <vector>
 #include <string>
@@ -20,8 +6,9 @@
 #include "Buffer.hh"
 using namespace std;
 
-Buffer::Buffer(const char filename[], size_t initialSize) : size(initialSize) {
-    buffer = new char[size];
+Buffer2::Buffer2(const char filename[], size_t initialSize) : size(initialSize) {
+    preBuffer = new char[size+extra*2];
+    buffer = extra+preBuffer;
     availSize = size;
     p = buffer;
     fd = creat(filename, 0664);
@@ -29,8 +16,9 @@ Buffer::Buffer(const char filename[], size_t initialSize) : size(initialSize) {
         throw "File cannot write";
     writing = true;
 }
-Buffer::Buffer(const char filename[], size_t initialSize, const char*)  : size(initialSize)  {
-    buffer = new char[size];
+Buffer2::Buffer2(const char filename[], size_t initialSize, const char*)  : size(initialSize)  {
+    preBuffer = new char[size+extra*2];
+    buffer = extra+preBuffer;
     p = buffer;
     fd = open(filename, O_RDONLY);
     if (fd < 0)
@@ -39,63 +27,27 @@ Buffer::Buffer(const char filename[], size_t initialSize, const char*)  : size(i
     writing = false;
 }
 
-Buffer::~Buffer() {
+Buffer2::~Buffer2() {
     if (writing)
         flush();
+    delete[]preBuffer;
     int status = close(fd);
 }
 
-void Buffer::readNext() {
+void Buffer2::readNext() {
     availSize = ::read(fd, buffer, size);
 }
-void Buffer:: flush () {
-    ::write(fd, buffer,p-buffer);
-    p = buffer;
-    availSize = size;
-}
-
-#if 0
-//*********************************//
-//************ uint8_t uint16_t uint32_t uint64_t array *************//
-template<typename T>
-void Buffer::writearray(T v[], size_t n) {
-    checArraySpace(v,n);
-    for (size_t i = 0; i < n; i++) {
-        *(T*)p = v[i];
-        p += sizeof(T);
-    }
-    availSize -= n * sizeof(T);
+void Buffer2:: flush () {//how to copy
+    ::write(fd, buffer,size);
+    size_t overSize = p - (buffer + size);
+    memcpy(buffer,buffer+size, overSize);
+    p = buffer + overSize;
+    availSize = size - overSize;
 }
 
 
-//*********************************//
-//************ uint8_t uint16_t uint32_t uint64_t vector *************//
-template<typename T>
-void Buffer::write(const vector<T>& v) {
-    checkVectorSpace(v);
-    for (size_t i = 0; i < v.size(); i++) {
-        *(T*)p = v[i];
-        p += sizeof(T);
-    }
-    availSize -= v.size() * sizeof(T);
-}
 
-//*********************************//
-//************ list1 *************//
-//************ list2  *************//
-//************ list3 *************//
-//************ list4 *************//
-
-void checkWriteMeta(uint32_t[]v, size_t n) {
-    DataType tag = n < 256 ? LIST1 : (n < 65536 ? LIST2 : LIST4);
-    *p++ = tag;
-
-}
-#endif
-//*********************************//
-//************ string **************//`
-//*******************************//
-void Buffer::write(const string& s) {
+void Buffer2::write(const string& s) {
     if(s.length() < 256) {
         *(uint8_t*)p++ = s.length();
     }else if (s.length() < 65536){
@@ -108,48 +60,9 @@ void Buffer::write(const string& s) {
     }
     availSize -= s.length();
 }
-//*********************************//
-//************** append *******************//
-//*********************************//
-//*********************************//
 
-#if  0
-/*
- * Create Buffer initialized with http headers with embedded mime type
- */
-char* Buffer::Buffer(size_t initialsize, const char* header, size_t size,
-										 const string& mimeType) {
-	data = new char[initialSize];
-	size = initialSize;
-  char* buf = data;
-	memcpy(buf, header, size);
-	buf += size;
-	memcpy(buf, mimeType.c_str(), mimeType.length());
-	buf += mimeType.length();
-	memcp\
-  y(buf, "\r\n\r\n", 4);
-  length = buf - data;
-}
 
-#endif
-
-//read array
-/*
-template<typename T>
-vector<T> readarray<T>() {
-    T length = *(*T) p;
-    p += sizeof(T);
-    vector<T>  *v;
-    for (size_t i = 0; i < length; i++) {
-        v[i] = *(T*)p = ;
-        p += sizeof(T);
-    }
-    return v;
-}
-*/
-//read string
-
-string Buffer::readstring1() {
+string Buffer2::readstring1() {
     uint8_t len = *(uint8_t *)p;
     p += sizeof(uint8_t);
     string s;
@@ -160,7 +73,7 @@ string Buffer::readstring1() {
     }
     return s;
 }
-string Buffer::readstring2() {
+string Buffer2::readstring2() {
     uint16_t len = *(uint16_t *)p;
     p += sizeof(uint16_t);
     string s;
@@ -171,7 +84,7 @@ string Buffer::readstring2() {
     }
     return s;
 }
-string Buffer::readstring4() {
+string Buffer2::readstring4() {
     uint32_t len = *(uint32_t *)p;
     p += sizeof(uint32_t);
     string s;
@@ -182,7 +95,24 @@ string Buffer::readstring4() {
     }
     return s;
 }
-
+StringBuffer::StringBuffer(size_t initialSize) : size(initialSize) {
+    s = new char[size];
+    availSz = size;
+    cursor = s;
+    size_t availSz;
+}
+StringBuffer::~StringBuffer() {
+    // don't know how to write
+}
+void StringBuffer:: flush () {
+    cursor = s;
+    availSz = size;
+}
+void StringBuffer:: appendUInt8(uint8_t v){
+    uint8_t len = sprintf(cursor,"%d",v);
+    cursor += len;
+    availSz -= len;
+}
 /*
 void Buffer::append(double v[],int number,const std::string& sep){
     checkSpace(number*(20+sep.length()));
@@ -192,5 +122,3 @@ void Buffer::append(double v[],int number,const std::string& sep){
 }
 };
  */
-//appenduint8(char *s)
-//sprintf(s,"%d",)
