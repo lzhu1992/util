@@ -6,42 +6,56 @@
 #include <fstream>
 #include <vector>
 #include <cstddef>
-
+#include <regex>
 using namespace std;
 class Buffer {
 private:
-    bool writing;
-    size_t size;
-    const size_t extra = 128;
-    char *preBuffer;
-    char * buffer;     // pointer to the buffer
-    size_t availSize;  // how much space is left in the buffer
-    char *p;           // cursor to current byte for reading/writing
-    int fd;            // file descriptor for file backing this buffer (read or write)
-    void checkAvailableRead(size_t sz) {
-        if (availSize < sz) {
-            size_t overflowSize = availSize;
-            memcpy(buffer - overflowSize, p, overflowSize);
-            readNext();
-						availSize += overflowSize;
-            p = buffer - overflowSize;
-        }
-    }
+  bool writing;
+	size_t size;
+	const size_t extra = 128;
+	char *preBuffer;
+	char * buffer;     // pointer to the buffer
+	size_t availSize;  // how much space is left in the buffer
+	char *p;           // cursor to current byte for reading/writing
+	int fd;            // file descriptor for file backing this buffer (read or write)
+	void checkAvailableRead(size_t sz) {
+		if (availSize < sz) {
+			size_t overflowSize = availSize;
+			memcpy(buffer - overflowSize, p, overflowSize);
+			readNext();
+			availSize += overflowSize;
+			p = buffer - overflowSize;
+		}
+	}
 public:
 	Buffer(size_t initialSize, bool writing);
 	Buffer(const char filename[], size_t initialSize);
-    Buffer(const char filename[], size_t initialSize, const char*);
-    Buffer(const Buffer & c) = delete;
+	Buffer(const char filename[], size_t initialSize, const char*);
+	Buffer(const Buffer & c) = delete;
 	void attach(int sockfd) { fd = sockfd; }
-    ~Buffer();
-    void operator =(const Buffer& orig) = delete;
-    void flush ();
-    void readNext();
-    void write(const string& s);
-    string readstring1();
-    string readstring2();
-    string readstring4();
+	~Buffer();
+	void operator =(const Buffer& orig) = delete;
+	void flush ();
+	void readNext();
+	void write(const string& s);
 
+	bool parseRegex(const regex& r, const char*& start, int& len);
+	// if parse returns true, advance past the token
+  bool parseToken(const string& match);
+
+
+	/**
+		 extract the next space-delimited value from the buffer
+		 if return true, this means ptr is pointing to the text, len = the length of the token
+		 (until the next space) and the current pointer advances past the token
+	*/
+	bool getNextToken(const char*&ptr, const uint32_t& len);
+
+	
+	string readstring1();
+	string readstring2();
+	string readstring4();
+	
 //*********************************//
 //************ uint8_t uint16_t uint32_t uint64_t *************//
     template<typename T>
