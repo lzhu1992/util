@@ -38,20 +38,16 @@ public:
 	void flush ();
 	void readNext();
 	void write(const string& s);
-
-	bool parseRegex(const regex& r, const char*& start, int& len);
+    void appendUInt8(uint8_t);
+    bool parseRegex(const regex& r, const char*& start, int& len);
 	// if parse returns true, advance past the token
-  bool parseToken(const string& match);
-
-
+    bool parseToken(const string& match);
 	/**
 		 extract the next space-delimited value from the buffer
 		 if return true, this means ptr is pointing to the text, len = the length of the token
 		 (until the next space) and the current pointer advances past the token
 	*/
 	bool getNextToken(const char*&ptr, const uint32_t& len);
-
-	
 	string readstring1();
 	string readstring2();
 	string readstring4();
@@ -141,18 +137,4 @@ public:
         checkAvailableRead(sizeof(uint64_t));
         return readUint64();
     }
-};
-// StringBuffer
-class StringBuffer{
-private:
-    char *s;
-    char * cursor;
-    size_t size;
-    size_t availSz;
-public:
-    StringBuffer(size_t initialSize);
-    StringBuffer(const StringBuffer & c) = delete;
-    ~StringBuffer();
-    void flush();
-    void appendUInt8(uint8_t);
 };

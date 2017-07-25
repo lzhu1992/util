@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "Buffer.hh"
+#include <regex>
 using namespace std;
 
 Buffer::Buffer(size_t initialSize, bool writing) : size(initialSize), writing(writing) {
@@ -95,24 +96,34 @@ string Buffer::readstring4() {
     }
     return s;
 }
-StringBuffer::StringBuffer(size_t initialSize) : size(initialSize) {
-    s = new char[size];
-    availSz = size;
-    cursor = s;
-    size_t availSz;
+void Buffer:: appendUInt8(uint8_t v){
+    uint8_t len = sprintf(p,"%d",v);
+    p += len;
+    availSize -= len;
 }
-StringBuffer::~StringBuffer() {
-    // don't know how to write
+bool Buffer::parseRegex(const regex& r, const char*& start, int& len);
+bool Buffer:: parseToken(const string& match) {
+    const char*m = match.c_str();
+    int ptr1 = strncmp(p,m,match.length());
+    return prt1 == 0; // true if match
+
 }
-void StringBuffer:: flush () {
-    cursor = s;
-    availSz = size;
+
+bool Buffer:: getNextToken(const char*&ptr, const uint32_t& len) {
+    int matched = strncmp(p, ptr, len);
+    *(uint32_t*)p++ = len;
+    return matched == 0;
 }
-void StringBuffer:: appendUInt8(uint8_t v){
-    uint8_t len = sprintf(cursor,"%d",v);
-    cursor += len;
-    availSz -= len;
+bool Buffer:: getNextTokenWithSpace(const char*&ptr, const uint32_t& len) {
+    while((*p  == ' '){
+        p++;
+    }
+    int matched = strncmp(p, ptr, len);
+    *(uint32_t*)p++ = len;
+    return matched == 0;
 }
+
+
 /*
 void Buffer::append(double v[],int number,const std::string& sep){
     checkSpace(number*(20+sep.length()));
